@@ -1,0 +1,10 @@
+sentence-transformers
+numpy 
+scipy
+pinecone
+python-dotenv
+transformers
+torch 
+torchvision 
+torchaudio
+einops
