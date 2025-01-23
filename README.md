@@ -5,6 +5,9 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 First, run the development server:
 
 ```bash
+python -m spacy download de_core_news_sm
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cpu                                   
+
 npm run dev
 # or
 yarn dev

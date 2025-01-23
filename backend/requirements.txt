@@ -1,6 +1,6 @@
 sentence-transformers
-numpy 
-scipy
+numpy
+spacy 
 pinecone
 python-dotenv
 transformers
@@ -8,3 +8,4 @@ torch
 torchvision 
 torchaudio
 einops
+tqdm

@@ -17,8 +17,8 @@ import { Input } from "@/components/ui/input";
 const formSchema = z.object({
   word: z
     .string()
-    .min(1, { message: "Word cannot be empty." })
-    .max(50, { message: "Word must be 50 characters or less." }),
+    .min(1, { message: "Das Wort darf nicht leer sein." })
+    .max(50, { message: "Das Wort darf höchstens 50 Zeichen lang sein." }),
 });
 
 interface WordInputProps {
