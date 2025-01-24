@@ -1,31 +1,57 @@
-import { Guess } from "./types";
+import { GuessWithPending } from "@/app/semantix/page";
 
 interface GuessesListProps {
-  guesses: Guess[];
+  guesses: GuessWithPending[];
 }
 
 export default function GuessesList({ guesses }: GuessesListProps) {
+  if (!guesses.length) return null;
+
+  const lastGuess = guesses[guesses.length - 1];
+  const sortedGuesses = [...guesses].sort((a, b) => b.score - a.score);
+
+  function getScoreDisplay(guess: GuessWithPending) {
+    return guess.isPending ? "Berechnung..." : guess.score.toFixed(4);
+  }
+
+  function getBackground(guess: GuessWithPending) {
+    const percentage = guess.score * 100;
+    const hue = guess.score * 120;
+    return `linear-gradient(
+      to right,
+      hsl(${hue}, 80%, 50%) ${percentage}%,
+      #f5f5f5 ${percentage}%
+    )`;
+  }
+
+  const lastGuessDisplayScore = getScoreDisplay(lastGuess);
+  const lastGuessBackground = getBackground(lastGuess);
+
   return (
     <div className="w-full max-w-md">
-      {guesses.map((guess, index) => {
-        // Normalize the score to a smoother scale
-        const maxScore = 10000; // Define the maximum score
-        const normalizedScore = Math.sqrt(guess.score / maxScore); // Apply square root for smoother scaling
-        // Generate dynamic background color (red to green)
-        const backgroundColor = `hsl(${normalizedScore * 120}, 60%, 85%)`;
+      <div
+        className="flex justify-between items-center p-3 mb-4 rounded-md text-gray-800 font-semibold border-4 border-gray-800 dark:border-white"
+        style={{ background: lastGuessBackground }}
+      >
+        <span>{lastGuess.word}</span>
+        <span>{lastGuessDisplayScore}</span>
+      </div>
+
+      {sortedGuesses.map((guess) => {
+        const displayScore = getScoreDisplay(guess);
+        const background = getBackground(guess);
+        const isLastGuess = guess === lastGuess;
 
         return (
           <div
-            key={index}
-            className="flex justify-between items-center p-3 mb-2 rounded-md text-gray-800 font-semibold"
-            style={{
-              background: `linear-gradient(to right, ${backgroundColor} ${
-                normalizedScore * 100
-              }%, #f5f5f5 ${normalizedScore * 100}%)`,
-            }}
+            key={guess.id}
+            className={`flex justify-between items-center p-3 mb-2 rounded-md text-gray-800 font-semibold ${
+              isLastGuess ? "border-4 border-gray-800 dark:border-white" : ""
+            }`}
+            style={{ background }}
           >
             <span>{guess.word}</span>
-            <span>{guess.score.toFixed(0)}</span>
+            <span>{displayScore}</span>
           </div>
         );
       })}
