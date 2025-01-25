@@ -1,8 +1,4 @@
-import { GuessWithPending } from "@/app/semantix/page";
-
-interface GuessesListProps {
-  guesses: GuessWithPending[];
-}
+import { GuessWithPending, GuessesListProps } from "@/types/typescomponents";
 
 export default function GuessesList({ guesses }: GuessesListProps) {
   if (!guesses.length) return null;
@@ -11,7 +7,9 @@ export default function GuessesList({ guesses }: GuessesListProps) {
   const sortedGuesses = [...guesses].sort((a, b) => b.score - a.score);
 
   function getScoreDisplay(guess: GuessWithPending) {
-    return guess.isPending ? "Berechnung..." : guess.score.toFixed(4);
+    return guess.isPending
+      ? "Berechnung..."
+      : `${(guess.score * 100).toFixed(2)}%`; // Convert to percentage with 2 decimal places
   }
 
   function getBackground(guess: GuessWithPending) {

@@ -1,5 +1,4 @@
-"use client";
-
+import { Guess } from "@/types/typescomponents";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -13,18 +12,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { WordInputProps } from "@/types/typescomponents";
 
 const formSchema = z.object({
   word: z
     .string()
     .min(1, { message: "Das Wort darf nicht leer sein." })
-    .regex(/^[A-Za-z]+$/, { message: "Bitte nur Buchstaben verwenden." })
+    .regex(/^[A-Za-zäöüßÄÖÜ]+$/, { message: "Bitte nur Buchstaben verwenden." })
     .max(50, { message: "Das Wort darf höchstens 50 Zeichen lang sein." }),
 });
-
-interface WordInputProps {
-  onGuess: (word: string) => void;
-}
 
 export default function WordInput({ onGuess }: WordInputProps) {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -32,7 +28,7 @@ export default function WordInput({ onGuess }: WordInputProps) {
     defaultValues: {
       word: "",
     },
-    mode: "onChange", 
+    mode: "onChange",
   });
 
   const handleSubmit = (values: z.infer<typeof formSchema>) => {

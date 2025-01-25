@@ -3,17 +3,16 @@
 import Header from "@/components/semantix/header";
 import WordInput from "@/components/semantix/wordinput";
 import GuessesList from "@/components/semantix/guesseslist";
-import { Guess } from "@/components/semantix/types";
+import { Guess, GuessWithPending } from "@/types/typescomponents";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export interface GuessWithPending extends Guess {
-  isPending?: boolean;
-}
 
 export default function SemantixGame() {
   const [guesses, setGuesses] = useState<GuessWithPending[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [hintCount, setHintCount] = useState(0);
+  const [targetWord, setTargetWord] = useState("");
 
   const getGameNumber = () => {
     const startDate = new Date("2025-01-23");
@@ -50,6 +49,10 @@ export default function SemantixGame() {
       }
 
       const data = await response.json();
+      if (!targetWord && data.matches?.[0]?.metadata?.word) {
+        setTargetWord(data.matches[0].metadata.word.toUpperCase());
+      }
+
       if (!data.matches || data.matches.length === 0) {
         toast.error("Dieses Wort existiert nicht in der Datenbank.");
         setGuesses((prev) => prev.filter((g) => g.id !== tempId));
@@ -75,10 +78,18 @@ export default function SemantixGame() {
 
   return (
     <>
-        <Header gameNumber={getGameNumber()} guessCount={guesses.length} />
+      <div className="max-w-md mx-auto w-full px-4 py-8">
+        <Header
+          gameNumber={getGameNumber()}
+          guessCount={guesses.length}
+          targetWord={targetWord}
+          hintCount={hintCount}
+          onHint={() => setHintCount((prev) => prev + 1)}
+        />{" "}
         <WordInput onGuess={handleGuess} />
         {error && <div className="text-red-500 mt-2">{error}</div>}
         <GuessesList guesses={guesses} />
+      </div>
     </>
   );
 }

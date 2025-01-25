@@ -18,9 +18,7 @@ export function SiteHeader() {
         </Link>
         <nav className="flex w-full items-center gap-6 text-sm">
           <Link
-            href="https://www.sadmn.com/blog/shadcn-table"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/leaderboard"
             className="text-foreground/60 transition-colors hover:text-foreground"
           >
             Leaderboard

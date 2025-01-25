@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { SiteHeader } from "@/components/layouts/site-header";
 import { ThemeProvider } from "@/components/layouts/providers";
 import { TailwindIndicator } from "@/components/layouts/tailwind-indicator";
+import { HeaderConditional } from "@/components/layouts/header";
 
 import "@/styles/globals.css";
 
@@ -33,7 +34,7 @@ export const metadata: Metadata = {
   authors: [
     {
       name: "David Kreismann, Leonard Eckert",
-      url: "https://www.sadmn.com",
+      url: "https://semantix-green.vercel.app/",
     },
   ],
   creator: "David Kreismann",
@@ -68,7 +69,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: React.PropsWithChildren) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="de_DE" suppressHydrationWarning>
       <head />
       <body
         className={cn(
@@ -85,9 +86,9 @@ export default function RootLayout({ children }: React.PropsWithChildren) {
           disableTransitionOnChange
         >
           <div className="relative flex min-h-screen flex-col">
-            <SiteHeader />
+            <HeaderConditional />
             <main className="flex-1">
-              <div className="max-w-96 mx-auto max-w-full px-4 py-8">
+              <div className="justify-center items-center md:py-12">
                 {children}
               </div>
             </main>
