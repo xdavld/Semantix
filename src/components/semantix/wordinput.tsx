@@ -1,4 +1,4 @@
-import { Guess } from "@/types/typescomponents";
+import { Guess } from "@/types/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -12,7 +12,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { WordInputProps } from "@/types/typescomponents";
+import { WordInputProps } from "@/types/types";
 
 const formSchema = z.object({
   word: z

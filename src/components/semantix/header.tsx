@@ -1,6 +1,7 @@
 // components/header.tsx
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   EllipsisVertical,
@@ -11,7 +12,7 @@ import {
   Info,
   Settings
 } from "lucide-react";
-import { HeaderProps } from "@/types/typescomponents";
+import { HeaderProps } from "@/types/types";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,7 +27,20 @@ export default function Header({
   targetWord,
   hintCount,
   onHint,
+  onSurrender,
 }: HeaderProps) {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const handleSurrender = (closeDialog: () => void) => {
+    const success = onSurrender();
+    if (success) {
+      closeDialog();
+      setIsDropdownOpen(false);
+    } else {
+      setIsDropdownOpen(true);
+    }
+  };
+
   return (
     <header className="py-4">
       <div className="flex items-center justify-between">
@@ -37,7 +51,7 @@ export default function Header({
           </p>
         </div>
 
-        <DropdownMenu>
+        <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon">
               <EllipsisVertical />
@@ -81,6 +95,7 @@ export default function Header({
               icon={<Lightbulb />}
               title="Tipp"
               dialogTitle="Hilfetipp"
+              dialogDescription="Erhalte Hinweise zum gesuchten Wort"
               onOpen={onHint}
             >
               {targetWord ? (
@@ -113,10 +128,24 @@ export default function Header({
               title="Aufgeben"
               dialogTitle="Wirklich aufgeben?"
             >
-              <div className="flex justify-end gap-2 mt-4">
-                <Button variant="outline">Abbrechen</Button>
-                <Button variant="destructive">Bestätigen</Button>
-              </div>
+              {({ closeDialog }) => (
+                <div className="flex justify-end gap-2 mt-4">
+                  <Button variant="outline" onClick={closeDialog}>
+                    Abbrechen
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    onClick={() => {
+                      const success = onSurrender();
+                      if (success) {
+                        closeDialog();
+                      }
+                    }}
+                  >
+                    Bestätigen
+                  </Button>
+                </div>
+              )}
             </DialogMenuItem>
 
             <DialogMenuItem

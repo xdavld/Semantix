@@ -1,4 +1,4 @@
-import { GuessWithPending, GuessesListProps } from "@/types/typescomponents";
+import { GuessWithPending, GuessesListProps } from "@/types/types";
 
 export default function GuessesList({ guesses }: GuessesListProps) {
   if (!guesses.length) return null;

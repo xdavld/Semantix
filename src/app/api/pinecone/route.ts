@@ -60,7 +60,6 @@ function getDailyTargetWord(): string {
       dailyTargetWord = possibleWords[randIndex];
     }
     lastDateUsed = today;
-    console.log("New daily word picked:", dailyTargetWord);
   }
   return dailyTargetWord;
 }
