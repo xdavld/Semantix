@@ -12,7 +12,11 @@ load_dotenv()
 PINECONE_KEY = os.getenv("PINECONE_KEY")
 pc = Pinecone(api_key=PINECONE_KEY)
 
-index_name = "semantix"
+# Upload verschiedener Vokabularwörter zu Pinecone (leichter und schwerer Modus)
+#LEICHT
+index_name = "semantix-easy"
+#SCHWER
+#index_name = "semantix"
 dimension = 1024 
 
 if index_name not in pc.list_indexes():
@@ -40,7 +44,10 @@ model.to(device)
 model.eval()  
 
 script_dir = Path(__file__).resolve().parent
-input_file = script_dir.parent / 'data' / 'openthesaurus_processed.txt'
+#LEICHTE LISTE
+input_file = script_dir.parent / 'data' / 'openthesaurus_processed_easymode.txt'
+#SCHWERE LISTE
+#input_file = script_dir.parent / 'data' / 'openthesaurus_processed.txt'
 
 with open(input_file, 'r', encoding='utf-8') as f:
     words = [line.strip() for line in f if line.strip()]

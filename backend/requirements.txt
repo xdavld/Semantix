@@ -9,3 +9,5 @@ torchvision
 torchaudio
 einops
 tqdm
+pyspellchecker
+wordfreq
