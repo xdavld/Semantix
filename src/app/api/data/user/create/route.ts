@@ -1,5 +1,3 @@
-// C:\Users\Power\src\Semantix\src\app\api\user\create\route.ts
-
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
