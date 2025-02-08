@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
       playerID = null,
       playerInput = null,
       playerScore = null,
-      targetWord = null,
+      targetWordId = null,
       isHint = null,
       isSurrender = null,
       difficulty = null,
@@ -21,10 +21,10 @@ export async function POST(request: NextRequest) {
       .from('action')
       .insert([
         {
-          playerID,
+          player_id: playerID,
           playerInput,
-          playerScore,
-          targetWord,
+          player_score: playerScore,
+          target_word_id: targetWordId,
           isHint,
           isSurrender,
           difficulty,
