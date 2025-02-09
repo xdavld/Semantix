@@ -10,7 +10,7 @@ import {
   Flag,
   Calendar,
   Info,
-  Settings
+  Settings,
 } from "lucide-react";
 import { HeaderProps } from "@/types/types";
 import {
@@ -19,6 +19,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { sendActionData } from "@/utils/action";
 import { DialogMenuItem } from "@/components/semantix/dialogmenuitem";
 
 export default function Header({
@@ -28,32 +29,40 @@ export default function Header({
   hintCount,
   onHint,
   onSurrender,
+  playerId,
+  difficulty,
+  targetWordId,
 }: HeaderProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const handleSurrender = (closeDialog: () => void) => {
+  const handleSurrenderWithAPI = (closeDialog: () => void) => {
     const success = onSurrender();
     if (success) {
+      sendActionData({
+        playerId: playerId,
+        difficulty: difficulty,
+        targetWordId: targetWordId,
+        isSurrender: true,
+      }).catch((error) =>
+        console.error("Error sending surrender data:", error)
+      );
       closeDialog();
-      setIsDropdownOpen(false);
-    } else {
-      setIsDropdownOpen(true);
     }
   };
 
   return (
-    <header className="py-4">
-      <div className="flex items-center justify-between">
+    <header className='py-4'>
+      <div className='flex items-center justify-between'>
         <div>
-          <h1 className="text-4xl font-bold">SEMANTIX</h1>
-          <p className="text-gray-600">
+          <h1 className='text-4xl font-bold'>SEMANTIX</h1>
+          <p className='text-gray-600'>
             SPIEL: #{gameNumber} | VERSUCHE: {guessCount}
           </p>
         </div>
 
         <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon">
+            <Button variant='ghost' size='icon'>
               <EllipsisVertical />
             </Button>
           </DropdownMenuTrigger>
@@ -61,28 +70,28 @@ export default function Header({
           <DropdownMenuContent>
             <DialogMenuItem
               icon={<CircleHelp />}
-              title="Wie funktioniert das Spiel?"
-              dialogTitle="Spielanleitung"
-              dialogDescription="Erfahren Sie, wie das Spiel funktioniert"
+              title='Wie funktioniert das Spiel?'
+              dialogTitle='Spielanleitung'
+              dialogDescription='Erfahren Sie, wie das Spiel funktioniert'
             >
-              <div className="space-y-4">
-                <p className="text-base">
+              <div className='space-y-4'>
+                <p className='text-base'>
                   Finde das <strong>geheime Wort</strong>. Du hast{" "}
                   <strong>unbegrenzt viele Versuche</strong>!
                 </p>
 
-                <p className="text-base">
+                <p className='text-base'>
                   Die Wörter wurden von einem <strong>KI-Algorithmus</strong>{" "}
                   nach ihrer Ähnlichkeit zum gesuchten Wort sortiert.
                 </p>
 
-                <p className="text-base">
+                <p className='text-base'>
                   Nach der Eingabe eines Wortes siehst du dessen{" "}
                   <strong>prozentuale Nähe</strong> zum Zielwort. Das gesuchte
                   Wort hat <strong>100 Prozent</strong>!
                 </p>
 
-                <p className="text-base">
+                <p className='text-base'>
                   Der Algorithmus hat <strong>tausende von Texten</strong>{" "}
                   analysiert. Er nutzt den <strong>Kontext</strong>, in dem
                   Wörter verwendet werden, um die Ähnlichkeit zwischen ihnen zu
@@ -93,21 +102,33 @@ export default function Header({
 
             <DialogMenuItem
               icon={<Lightbulb />}
-              title="Tipp"
-              dialogTitle="Hilfetipp"
-              dialogDescription="Erhalte Hinweise zum gesuchten Wort"
-              onOpen={onHint}
+              title='Tipp'
+              dialogTitle='Hilfetipp'
+              dialogDescription='Erhalte Hinweise zum gesuchten Wort'
+              onOpen={() => {
+                if (targetWord) {
+                  onHint();
+                  sendActionData({
+                    playerId,
+                    difficulty,
+                    targetWordId,
+                    isHint: true, // Kennzeichne, dass ein Tipp ausgelöst wurde
+                  }).catch((error) =>
+                    console.error("Error sending hint data:", error)
+                  );
+                }
+              }}
             >
               {targetWord ? (
-                <div className="space-y-4">
-                  <p className="text-lg font-mono tracking-widest">
+                <div className='space-y-4'>
+                  <p className='text-lg font-mono tracking-widest'>
                     {Array.from(targetWord).map((char, index) => (
-                      <span key={index} className="mx-1">
+                      <span key={index} className='mx-1'>
                         {index < hintCount - 1 ? char : "_"}
                       </span>
                     ))}
                   </p>
-                  <div className="text-sm text-muted-foreground">
+                  <div className='text-sm text-muted-foreground'>
                     {hintCount === 0 && "Erster Tipp: Wortlänge anzeigen"}
                     {hintCount === 1 &&
                       `Das Wort hat ${targetWord.length} Buchstaben`}
@@ -116,30 +137,27 @@ export default function Header({
                   </div>
                 </div>
               ) : (
-                <p className="text-base">
+                <p className='text-base'>
                   Machen Sie zuerst einen Versuch um{" "}
-                  <strong className="font-bold">Tipps</strong> freizuschalten!
+                  <strong className='font-bold'>Tipps</strong> freizuschalten!
                 </p>
               )}
             </DialogMenuItem>
 
             <DialogMenuItem
               icon={<Flag />}
-              title="Aufgeben"
-              dialogTitle="Wirklich aufgeben?"
+              title='Aufgeben'
+              dialogTitle='Wirklich aufgeben?'
             >
               {({ closeDialog }) => (
-                <div className="flex justify-end gap-2 mt-4">
-                  <Button variant="outline" onClick={closeDialog}>
+                <div className='flex justify-end gap-2 mt-4'>
+                  <Button variant='outline' onClick={closeDialog}>
                     Abbrechen
                   </Button>
                   <Button
-                    variant="destructive"
+                    variant='destructive'
                     onClick={() => {
-                      const success = onSurrender();
-                      if (success) {
-                        closeDialog();
-                      }
+                      handleSurrenderWithAPI(closeDialog);
                     }}
                   >
                     Bestätigen
@@ -150,8 +168,8 @@ export default function Header({
 
             <DialogMenuItem
               icon={<Calendar />}
-              title="Frühere Spiele"
-              dialogTitle="Spielverlauf"
+              title='Frühere Spiele'
+              dialogTitle='Spielverlauf'
             >
               <p>Hier kommt die Liste der früheren Spiele...</p>
             </DialogMenuItem>
@@ -160,51 +178,51 @@ export default function Header({
 
             <DialogMenuItem
               icon={<Settings />}
-              title="Einstellungen"
-              dialogTitle="Spieleinstellungen"
-              dialogDescription="Passe die Spieleinstellungen an"
+              title='Einstellungen'
+              dialogTitle='Spieleinstellungen'
+              dialogDescription='Passe die Spieleinstellungen an'
             >
               <p>Hier kommen die Einstellungen zum Spiel...</p>
             </DialogMenuItem>
 
             <DialogMenuItem
               icon={<Info />}
-              title="Credits"
-              dialogTitle="Credits"
-              dialogDescription="Informationen über die verwendeten Ressourcen und Danksagungen"
+              title='Credits'
+              dialogTitle='Credits'
+              dialogDescription='Informationen über die verwendeten Ressourcen und Danksagungen'
             >
-              <div className="space-y-4">
-                <p className="text-base">
+              <div className='space-y-4'>
+                <p className='text-base'>
                   Inspiriert von{" "}
                   <a
-                    href="https://semantle.com/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-semibold hover:text-blue-600 cursor-pointer"
+                    href='https://semantle.com/'
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='font-semibold hover:text-blue-600 cursor-pointer'
                   >
                     Semantle
                   </a>
                 </p>
 
-                <p className="text-base">
+                <p className='text-base'>
                   Das Vokabular zur Berechnung der Wortähnlichkeiten stammt von{" "}
                   <a
-                    href="https://www.openthesaurus.de/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-semibold hover:text-blue-600 cursor-pointer"
+                    href='https://www.openthesaurus.de/'
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='font-semibold hover:text-blue-600 cursor-pointer'
                   >
                     OpenThesaurus
                   </a>
                 </p>
 
-                <p className="text-base">
+                <p className='text-base'>
                   Die Berechnung der Embeddings basiert auf dem{" "}
                   <a
-                    href="https://huggingface.co/jinaai/jina-embeddings-v3"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-semibold hover:text-blue-600 cursor-pointer"
+                    href='https://huggingface.co/jinaai/jina-embeddings-v3'
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='font-semibold hover:text-blue-600 cursor-pointer'
                   >
                     jina-embeddings-v3
                   </a>{" "}
