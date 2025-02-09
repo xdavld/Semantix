@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { NextRequest, NextResponse } from "next/server";
+import { supabase } from "@/lib/supabase";
 
 export async function POST(request: NextRequest) {
   try {
@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
 
     // Extract fields from the request; default to null if undefined
     const {
-      playerID = null,
+      playerId = null,
       playerInput = null,
       playerScore = null,
       targetWordId = null,
@@ -18,10 +18,10 @@ export async function POST(request: NextRequest) {
     } = body;
 
     const { data, error } = await supabase
-      .from('action')
+      .from("action")
       .insert([
         {
-          player_id: playerID,
+          player_id: playerId,
           playerInput,
           player_score: playerScore,
           target_word_id: targetWordId,
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
           difficulty,
         },
       ])
-      .select('*'); // Returns the newly created record(s)
+      .select("*"); // Returns the newly created record(s)
 
     // Handle any Supabase error
     if (error) {
@@ -41,9 +41,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ data }, { status: 201 });
   } catch (err) {
     // Log the error so "err" is not unused
-    console.error('[POST /api/data/action] Caught error:', err);
+    console.error("[POST /api/data/action] Caught error:", err);
     return NextResponse.json(
-      { error: 'Invalid request body' },
+      { error: "Invalid request body" },
       { status: 400 }
     );
   }
