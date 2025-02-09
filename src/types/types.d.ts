@@ -23,6 +23,9 @@ export type HeaderProps = GameStats & {
   gameNumber: number;
   onSurrender: () => boolean;
   onHint: () => void;
+  playerId: string;
+  difficulty: string;
+  targetWordId: string;
 };
 
 export type WordInputProps = {
