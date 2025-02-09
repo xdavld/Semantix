@@ -112,7 +112,7 @@ export default function Header({
                     playerId,
                     difficulty,
                     targetWordId,
-                    isHint: true, // Kennzeichne, dass ein Tipp ausgelöst wurde
+                    isHint: true,
                   }).catch((error) =>
                     console.error("Error sending hint data:", error)
                   );
