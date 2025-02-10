@@ -24,7 +24,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     // Aufruf des Pinecone-Endpunkts; hier erhalten wir direkt einen PineconeResponse.
     const pineconeResult: PineconeResponse = await callPinecone(Typedinword);
-    console.log("Pinecone response:", JSON.stringify(pineconeResult, null, 2));
+    //console.log("Pinecone response:", JSON.stringify(pineconeResult, null, 2));
 
     // Extrahiere den Score aus dem ersten Treffer (falls vorhanden)
     const playerScore = pineconeResult.matches?.[0]?.score ?? null;
