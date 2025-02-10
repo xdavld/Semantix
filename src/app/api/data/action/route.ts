@@ -5,6 +5,7 @@ export async function POST(request: NextRequest) {
   try {
     // Parse the request body as JSON
     const body = await request.json();
+    console.log("Received request body:", JSON.stringify(body, null, 2));
 
     // Extract fields from the request; default to null if undefined
     const {
@@ -13,6 +14,7 @@ export async function POST(request: NextRequest) {
       playerScore = null,
       targetWordId = null,
       isHint = null,
+      isWin = null,
       isSurrender = null,
       difficulty = null,
     } = body;
@@ -26,6 +28,7 @@ export async function POST(request: NextRequest) {
           player_score: playerScore,
           target_word_id: targetWordId,
           isHint,
+          isWin,
           isSurrender,
           difficulty,
         },

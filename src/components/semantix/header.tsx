@@ -38,14 +38,6 @@ export default function Header({
   const handleSurrenderWithAPI = (closeDialog: () => void) => {
     const success = onSurrender();
     if (success) {
-      sendActionData({
-        playerId: playerId,
-        difficulty: difficulty,
-        targetWordId: targetWordId,
-        isSurrender: true,
-      }).catch((error) =>
-        console.error("Error sending surrender data:", error)
-      );
       closeDialog();
     }
   };

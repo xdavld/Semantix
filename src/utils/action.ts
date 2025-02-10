@@ -10,6 +10,7 @@ export interface ActionParams {
   targetWordId?: string | null;
   isHint?: boolean | null;
   isSurrender?: boolean | null;
+  isWin?: boolean | null;
   difficulty?: string | null;
 }
 
@@ -25,6 +26,7 @@ export interface ActionRecord {
   target_word_id: string | null;
   isHint: boolean | null;
   isSurrender: boolean | null;
+  isWin?: boolean | null;
   difficulty: string | null;
 }
 
@@ -59,6 +61,7 @@ export async function sendActionData(
       targetWordId: params.targetWordId ?? null,
       isHint: params.isHint ?? null,
       isSurrender: params.isSurrender ?? null,
+      isWin: params.isWin ?? null,
       difficulty: params.difficulty ?? null,
     }),
   });

@@ -8,10 +8,11 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { WinDialog } from "@/components/semantix/winningscreen";
+import { sendActionData } from "@/utils/action";
 
 export default function SemantixGame() {
   //These 3 fields are defining who the player is and which game mode he is playing
-  const [playerId, setplayerId] = useState("4");
+  const [playerId, setplayerId] = useState("5");
   const [difficulty, setdifficulty] = useState("de_easy");
   const [targetWordId, setTargetWordId] = useState("1");
 
@@ -93,6 +94,14 @@ export default function SemantixGame() {
 
       if (word.toUpperCase() === targetWord) {
         setHasWon(true);
+        sendActionData({
+          playerId: playerId,
+          difficulty: difficulty,
+          targetWordId: targetWordId,
+          isWin: true,
+        }).catch((error) =>
+          console.error("Error sending winning data:", error)
+        );
       }
 
       setError(null);
@@ -110,6 +119,12 @@ export default function SemantixGame() {
     }
     setIsSurrendered(true);
     setHasWon(true);
+    sendActionData({
+      playerId: playerId,
+      difficulty: difficulty,
+      targetWordId: targetWordId,
+      isSurrender: true,
+    }).catch((error) => console.error("Error sending surrender data:", error));
     return true;
   };
 
