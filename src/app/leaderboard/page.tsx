@@ -1,11 +1,14 @@
-import { LoginForm } from "@/components/login/login-form";
+"use client";
 
-export default function LoginPage() {
+import React from "react";
+import { Filters } from "./filters";
+import { LeaderboardTable } from "./LeaderboardTable";
+
+export default function Page() {
   return (
-    <div className="flex min-h-svh flex-col items-center p-6 md:p-16">
-      <div className="w-full max-w-sm md:max-w-3xl">
-        <LoginForm />
-      </div>
-    </div>
+    <section className='mx-auto max-w-2xl px-4 py-6 space-y-8'>
+      <Filters />
+      <LeaderboardTable />
+    </section>
   );
 }
