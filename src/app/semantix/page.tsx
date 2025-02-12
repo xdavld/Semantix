@@ -12,7 +12,7 @@ import { sendActionData } from "@/utils/action";
 
 export default function SemantixGame() {
   //These 3 fields are defining who the player is and which game mode he is playing
-  const [playerId, setplayerId] = useState("5");
+  const [playerId, setplayerId] = useState("6");
   const [difficulty, setdifficulty] = useState("de_easy");
   const [targetWordId, setTargetWordId] = useState("1");
 
