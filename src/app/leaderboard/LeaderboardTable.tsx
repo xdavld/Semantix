@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/table";
 
 interface LeaderboardItem {
-  player_id: string;
+  playerName: string;
   target_word_id: string;
   difficulty: string;
   sum_guesses: number;
@@ -88,7 +88,7 @@ export function LeaderboardTable({
       <TableBody>
         {filteredData.map((item, index) => (
           <TableRow key={index} className={item.is_surrender ? "bg-muted" : ""}>
-            <TableCell>{item.player_id}</TableCell>
+            <TableCell>{item.playerName}</TableCell>
             <TableCell className='text-right'>{item.sum_guesses}</TableCell>
             <TableCell className='text-right'>{item.sum_hint}</TableCell>
           </TableRow>
