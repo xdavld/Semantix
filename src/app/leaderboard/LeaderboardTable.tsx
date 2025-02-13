@@ -82,7 +82,7 @@ export function LeaderboardTable({
         <TableRow>
           <TableHead>Spieler Name</TableHead>
           <TableHead className='text-right'>Anzahl Versuche</TableHead>
-          <TableHead className='text-right'>Anzahl Hints</TableHead>
+          <TableHead className='text-right'>Anzahl Tipps</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
