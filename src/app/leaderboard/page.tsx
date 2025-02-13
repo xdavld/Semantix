@@ -73,7 +73,8 @@ export default function Page() {
         <CardFooter>
           {/* Hier könntest Du z.B. Buttons anzeigen, wenn Du möchtest */}
           <p className='text-sm text-muted-foreground'>
-            &rarr; Änderung der Filter aktualisiert automatisch das Leaderboard
+            {/*&rarr;{" "}
+            {/*Änderung der Filter aktualisiert automatisch das Leaderboard*/}
           </p>
         </CardFooter>
       </Card>
