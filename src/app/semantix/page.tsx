@@ -8,8 +8,14 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { WinDialog } from "@/components/semantix/winningscreen";
+import { sendActionData } from "@/utils/action";
 
 export default function SemantixGame() {
+  //These 3 fields are defining who the player is and which game mode he is playing
+  const [playerId, setplayerId] = useState("6");
+  const [difficulty, setdifficulty] = useState("de_easy");
+  const [targetWordId, setTargetWordId] = useState("1");
+
   const [guesses, setGuesses] = useState<GuessWithPending[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [hintCount, setHintCount] = useState(0);
@@ -41,12 +47,17 @@ export default function SemantixGame() {
     ]);
 
     try {
-      const response = await fetch("/api/pinecone", {
+      const response = await fetch("/api/handleAction", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ Typedinword: word }),
+        body: JSON.stringify({
+          Typedinword: word,
+          playerId: playerId,
+          difficulty: difficulty,
+          targetWordId: targetWordId,
+        }),
       });
 
       if (!response.ok) {
@@ -83,6 +94,14 @@ export default function SemantixGame() {
 
       if (word.toUpperCase() === targetWord) {
         setHasWon(true);
+        sendActionData({
+          playerId: playerId,
+          difficulty: difficulty,
+          targetWordId: targetWordId,
+          isWin: true,
+        }).catch((error) =>
+          console.error("Error sending winning data:", error)
+        );
       }
 
       setError(null);
@@ -100,12 +119,18 @@ export default function SemantixGame() {
     }
     setIsSurrendered(true);
     setHasWon(true);
+    sendActionData({
+      playerId: playerId,
+      difficulty: difficulty,
+      targetWordId: targetWordId,
+      isSurrender: true,
+    }).catch((error) => console.error("Error sending surrender data:", error));
     return true;
   };
 
   return (
     <>
-      <div className="max-w-md mx-auto w-full px-4 py-8">
+      <div className='max-w-md mx-auto w-full px-4 py-8'>
         <Header
           gameNumber={getGameNumber()}
           guessCount={guesses.length}
@@ -113,9 +138,12 @@ export default function SemantixGame() {
           hintCount={hintCount}
           onHint={() => setHintCount((prev) => prev + 1)}
           onSurrender={handleSurrender}
+          playerId={playerId}
+          difficulty={difficulty}
+          targetWordId={targetWordId}
         />
         <WordInput onGuess={handleGuess} />
-        {error && <div className="text-red-500 mt-2">{error}</div>}
+        {error && <div className='text-red-500 mt-2'>{error}</div>}
         <GuessesList guesses={guesses} />
       </div>
 
