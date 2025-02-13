@@ -11,6 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+// Beispiel-Interface für Leaderboard-Einträge
 interface LeaderboardItem {
   player_id: string;
   target_word_id: string;
@@ -20,22 +21,36 @@ interface LeaderboardItem {
   is_surrender: boolean;
 }
 
+// Props für das Leaderboard
 interface LeaderboardTableProps {
-  hideSurrender: boolean;
+  hideSurrender: boolean; // Ob Surrender ausgeblendet werden soll
+  targetWordId: string; // Ausgewählte Spielnummer
+  difficultyQuery: string; // Zusammengesetzte Difficulty (z.B. "de_easy")
 }
 
-export function LeaderboardTable({ hideSurrender }: LeaderboardTableProps) {
+export function LeaderboardTable({
+  hideSurrender,
+  targetWordId,
+  difficultyQuery,
+}: LeaderboardTableProps) {
   const [leaderboardData, setLeaderboardData] = React.useState<
     LeaderboardItem[]
   >([]);
 
   React.useEffect(() => {
+    // Falls nichts ausgewählt ist, keine Abfrage
+    if (!targetWordId || !difficultyQuery) {
+      setLeaderboardData([]);
+      return;
+    }
+
     async function fetchLeaderboardData() {
       try {
         const response = await fetch(
-          "http://localhost:3000/api/data/leaderboard?target_word_id=1&difficulty=de_easy"
+          `http://localhost:3000/api/data/leaderboard?target_word_id=${targetWordId}&difficulty=${difficultyQuery}`
         );
         const json = await response.json();
+        // json.data sollte ein Array enthalten
         setLeaderboardData(json.data || []);
       } catch (error) {
         console.error("Fehler beim Laden der Leaderboard-Daten:", error);
@@ -43,9 +58,9 @@ export function LeaderboardTable({ hideSurrender }: LeaderboardTableProps) {
     }
 
     fetchLeaderboardData();
-  }, []);
+  }, [targetWordId, difficultyQuery]);
 
-  // Filter die surrender raus, falls hideSurrender == true
+  // Wenn hideSurrender = true, filtern wir alle is_surrender heraus
   const filteredData = hideSurrender
     ? leaderboardData.filter((item) => !item.is_surrender)
     : leaderboardData;
