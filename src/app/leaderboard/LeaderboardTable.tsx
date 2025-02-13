@@ -36,15 +36,19 @@ export function LeaderboardTable({
   >([]);
 
   React.useEffect(() => {
+    // Falls ein Parameter fehlt, kein Fetch
     if (!targetWordId || !difficultyQuery) {
       setLeaderboardData([]);
       return;
     }
 
+    // Dynamische Base-URL
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+
     async function fetchLeaderboardData() {
       try {
         const response = await fetch(
-          `http://localhost:3000/api/data/leaderboard?target_word_id=${targetWordId}&difficulty=${difficultyQuery}`
+          `${baseUrl}/api/data/leaderboard?target_word_id=${targetWordId}&difficulty=${difficultyQuery}`
         );
         const json = await response.json();
         setLeaderboardData(json.data || []);
@@ -56,10 +60,21 @@ export function LeaderboardTable({
     fetchLeaderboardData();
   }, [targetWordId, difficultyQuery]);
 
+  // Surrender ggf. ausfiltern
   const filteredData = hideSurrender
     ? leaderboardData.filter((item) => !item.is_surrender)
     : leaderboardData;
 
+  // Wenn keine Daten vorhanden sind, zeige Text statt Tabelle
+  if (!filteredData.length) {
+    return (
+      <p className='text-sm text-muted-foreground'>
+        Keine Daten vorhanden, bitte ändere deine Auswahl.
+      </p>
+    );
+  }
+
+  // Ansonsten Tabelle darstellen
   return (
     <Table>
       {/*<TableCaption>Leaderboard Daten</TableCaption>*/}
@@ -72,11 +87,7 @@ export function LeaderboardTable({
       </TableHeader>
       <TableBody>
         {filteredData.map((item, index) => (
-          <TableRow
-            key={index}
-            // Hintergrund grau, wenn is_surrender = true
-            className={item.is_surrender ? "bg-muted" : ""}
-          >
+          <TableRow key={index} className={item.is_surrender ? "bg-muted" : ""}>
             <TableCell>{item.player_id}</TableCell>
             <TableCell className='text-right'>{item.sum_guesses}</TableCell>
             <TableCell className='text-right'>{item.sum_hint}</TableCell>
