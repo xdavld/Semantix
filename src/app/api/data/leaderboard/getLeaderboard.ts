@@ -27,7 +27,7 @@ export async function handleGet(request: NextRequest) {
       .order("sum_guesses", { ascending: false });
 
     // Log der zurückgelieferten Leaderboard-Daten
-    console.log("leaderboardData:", leaderboardData);
+    //console.log("leaderboardData:", leaderboardData);
 
     if (leaderboardError) {
       console.error("Error fetching leaderboard data:", leaderboardError);
@@ -53,7 +53,7 @@ export async function handleGet(request: NextRequest) {
       .in("player_id", uniquePlayerIds);
 
     // Log der zurückgelieferten User-Daten
-    console.log("usersData:", usersData);
+    //console.log("usersData:", usersData);
 
     if (usersError) {
       console.error("Error fetching users data:", usersError);
