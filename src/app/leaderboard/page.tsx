@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { Filters } from "./filters";
-import { LeaderboardTable } from "./LeaderboardTable";
+import { Filters } from "../../components/leaderboard/filters";
+import { LeaderboardTable } from "../../components/leaderboard/LeaderboardTable";
 
 // Importiere die Card-Komponenten
 import {
