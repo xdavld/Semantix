@@ -27,7 +27,7 @@ export async function handleGet(request: NextRequest) {
       .order("sum_guesses", { ascending: false });
 
     // Log der zurückgelieferten Leaderboard-Daten
-    //console.log("leaderboardData:", leaderboardData);
+    console.log("leaderboardData:", leaderboardData);
 
     if (leaderboardError) {
       console.error("Error fetching leaderboard data:", leaderboardError);
@@ -53,7 +53,7 @@ export async function handleGet(request: NextRequest) {
       .in("player_id", uniquePlayerIds);
 
     // Log der zurückgelieferten User-Daten
-    //console.log("usersData:", usersData);
+    console.log("usersData:", usersData);
 
     if (usersError) {
       console.error("Error fetching users data:", usersError);
@@ -64,19 +64,20 @@ export async function handleGet(request: NextRequest) {
     }
 
     // 6. Mapping player_id -> playerName aufbauen
-    const userMap = new Map<string, string>();
+    const userMap = new Map<number, string>();
     if (usersData && usersData.length > 0) {
       for (const user of usersData) {
-        userMap.set(String(user.player_id), user.playerName);
+        userMap.set(user.player_id, user.playerName);
       }
     }
 
     // 7. Leaderboard-Daten anreichern (player_id raus, playerName rein)
     const enrichedData = leaderboardData.map(({ player_id, ...rest }) => ({
       ...rest,
-      playerName: userMap.get(player_id) || "anonymous",
+      playerName: userMap.get(Number(player_id)) || "anonymous",
     }));
 
+    console.log(enrichedData)
     // 8. Response senden
     return NextResponse.json({ data: enrichedData }, { status: 200 });
   } catch (err) {
