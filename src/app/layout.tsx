@@ -4,6 +4,8 @@ import { SiteHeader } from "@/components/layouts/site-header";
 import { ThemeProvider } from "@/components/layouts/providers";
 import { TailwindIndicator } from "@/components/layouts/tailwind-indicator";
 import { HeaderConditional } from "@/components/layouts/header";
+import { PlayerProvider } from "@/context/PlayerContext";
+
 
 import "@/styles/globals.css";
 
@@ -85,15 +87,16 @@ export default function RootLayout({ children }: React.PropsWithChildren) {
           enableSystem
           disableTransitionOnChange
         >
-          <div className="relative flex min-h-screen flex-col">
-            <HeaderConditional />
-            <main className="flex-1">
-              <div className="justify-center items-center md:py-12">
-                {children}
-              </div>
-            </main>
-          </div>
-
+          <PlayerProvider> {/* Handeling Player */}
+            <div className="relative flex min-h-screen flex-col">
+              <HeaderConditional />
+              <main className="flex-1">
+                <div className="justify-center items-center md:py-12">
+                  {children}
+                </div>
+              </main>
+            </div>
+          </PlayerProvider>
           <TailwindIndicator />
         </ThemeProvider>
         <Toaster />

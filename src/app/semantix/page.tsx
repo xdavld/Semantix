@@ -9,10 +9,12 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { WinDialog } from "@/components/semantix/winningscreen";
 import { sendActionData } from "@/utils/action";
+import { usePlayer } from "@/context/PlayerContext"; // Importiere den PlayerContext
+
 
 export default function SemantixGame() {
   //These 3 fields are defining who the player is and which game mode he is playing
-  const [playerId, setplayerId] = useState("6");
+  const { playerId, setPlayerId } = usePlayer();
   const [difficulty, setdifficulty] = useState("de_easy");
   const [targetWordId, setTargetWordId] = useState("1");
 
