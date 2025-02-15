@@ -4,18 +4,19 @@ import Header from "@/components/semantix/header";
 import WordInput from "@/components/semantix/wordinput";
 import GuessesList from "@/components/semantix/guesseslist";
 import { GuessWithPending } from "@/types/types";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { WinDialog } from "@/components/semantix/winningscreen";
 import { sendActionData } from "@/utils/action";
+import SettingsForm from "@/components/semantix/settingsform";
 
 export default function SemantixGame() {
-  //These 3 fields are defining who the player is and which game mode he is playing
-  const [playerId, setplayerId] = useState("6");
-  const [difficulty, setdifficulty] = useState("de_easy");
+  const [difficulty, setDifficulty] = useState("de_easy");
+  const [playerId, setPlayerId] = useState("6");
   const [targetWordId, setTargetWordId] = useState("1");
 
+  const [settingsConfirmed, setSettingsConfirmed] = useState(false);
   const [guesses, setGuesses] = useState<GuessWithPending[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [hintCount, setHintCount] = useState(0);
@@ -24,12 +25,23 @@ export default function SemantixGame() {
   const [isSurrendered, setIsSurrendered] = useState(false);
   const router = useRouter();
 
+  const handleLanguageChange = (newLanguage: string) => {
+    const parts = difficulty.split("_");
+    setDifficulty(newLanguage + "_" + parts[1]);
+  };
+
+  const handleDifficultyTypeChange = (newType: string) => {
+    const parts = difficulty.split("_");
+    setDifficulty(parts[0] + "_" + newType);
+  };
+
   const resetGame = () => {
     setGuesses([]);
     setHintCount(0);
     setTargetWord("");
     setHasWon(false);
     setIsSurrendered(false);
+    setSettingsConfirmed(false); 
   };
 
   const getGameNumber = () => {
@@ -54,9 +66,9 @@ export default function SemantixGame() {
         },
         body: JSON.stringify({
           Typedinword: word,
-          playerId: playerId,
-          difficulty: difficulty,
-          targetWordId: targetWordId,
+          difficulty, 
+          playerId,
+          targetWordId,
         }),
       });
 
@@ -71,7 +83,6 @@ export default function SemantixGame() {
       }
 
       const data = await response.json();
-
       const apiTargetWord = data.matches?.[0]?.metadata?.word;
       if (apiTargetWord && !targetWord) {
         setTargetWord(apiTargetWord.toUpperCase());
@@ -95,9 +106,7 @@ export default function SemantixGame() {
       if (word.toUpperCase() === targetWord) {
         setHasWon(true);
         sendActionData({
-          playerId: playerId,
-          difficulty: difficulty,
-          targetWordId: targetWordId,
+          difficulty,
           isWin: true,
         }).catch((error) =>
           console.error("Error sending winning data:", error)
@@ -120,17 +129,28 @@ export default function SemantixGame() {
     setIsSurrendered(true);
     setHasWon(true);
     sendActionData({
-      playerId: playerId,
-      difficulty: difficulty,
-      targetWordId: targetWordId,
+      difficulty,
       isSurrender: true,
     }).catch((error) => console.error("Error sending surrender data:", error));
     return true;
   };
 
+  if (!settingsConfirmed) {
+    return (
+      <div className="max-w-md mx-auto w-full px-4 py-8">
+        <SettingsForm
+          difficulty={difficulty}
+          onLanguageChange={handleLanguageChange}
+          onDifficultyTypeChange={handleDifficultyTypeChange}
+          onConfirm={() => setSettingsConfirmed(true)}
+        />
+      </div>
+    );
+  }
+
   return (
     <>
-      <div className='max-w-md mx-auto w-full px-4 py-8'>
+      <div className="max-w-md mx-auto w-full px-4 py-8">
         <Header
           gameNumber={getGameNumber()}
           guessCount={guesses.length}
@@ -143,7 +163,7 @@ export default function SemantixGame() {
           targetWordId={targetWordId}
         />
         <WordInput onGuess={handleGuess} />
-        {error && <div className='text-red-500 mt-2'>{error}</div>}
+        {error && <div className="text-red-500 mt-2">{error}</div>}
         <GuessesList guesses={guesses} />
       </div>
 

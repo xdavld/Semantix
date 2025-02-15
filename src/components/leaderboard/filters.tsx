@@ -67,7 +67,6 @@ export function Filters({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value='leicht'>Leicht</SelectItem>
-            <SelectItem value='mittel'>Mittel</SelectItem>
             <SelectItem value='schwer'>Schwer</SelectItem>
           </SelectContent>
         </Select>

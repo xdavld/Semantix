@@ -9,8 +9,14 @@ export const env = createEnv({
   server: {
     NODE_ENV: z.enum(["development", "test", "production"]),
     PINECONE_API_KEY: z.string(),
-    PINECONE_INDEX_NAME: z.string(),
-    PINECONE_INDEX_HOST: z.string().url(),
+    PINECONE_INDEX_NAME_DE_EASY: z.string(),
+    PINECONE_INDEX_HOST_DE_EASY: z.string().url(),
+    PINECONE_INDEX_NAME_DE_HARD: z.string(),
+    PINECONE_INDEX_HOST_DE_HARD: z.string().url(),
+    PINECONE_INDEX_NAME_EN_EASY: z.string(),
+    PINECONE_INDEX_HOST_EN_EASY: z.string().url(),
+    PINECONE_INDEX_NAME_EN_HARD: z.string(),
+    PINECONE_INDEX_HOST_EN_HARD: z.string().url(),
   },
 
   /**
@@ -20,6 +26,8 @@ export const env = createEnv({
    */
   client: {
     NEXT_PUBLIC_APP_URL: z.string().url(),
+    NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
   },
 
   /**
@@ -30,8 +38,16 @@ export const env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     PINECONE_API_KEY: process.env.PINECONE_API_KEY,
-    PINECONE_INDEX_NAME: process.env.PINECONE_INDEX_NAME,
-    PINECONE_INDEX_HOST: process.env.PINECONE_INDEX_HOST,
+    PINECONE_INDEX_NAME_DE_EASY: process.env.PINECONE_INDEX_NAME_DE_EASY,
+    PINECONE_INDEX_HOST_DE_EASY: process.env.PINECONE_INDEX_HOST_DE_EASY,
+    PINECONE_INDEX_NAME_DE_HARD: process.env.PINECONE_INDEX_NAME_DE_HARD,
+    PINECONE_INDEX_HOST_DE_HARD: process.env.PINECONE_INDEX_HOST_DE_HARD,
+    PINECONE_INDEX_NAME_EN_EASY: process.env.PINECONE_INDEX_NAME_EN_EASY,
+    PINECONE_INDEX_HOST_EN_EASY: process.env.PINECONE_INDEX_HOST_EN_EASY,
+    PINECONE_INDEX_NAME_EN_HARD: process.env.PINECONE_INDEX_NAME_EN_HARD,
+    PINECONE_INDEX_HOST_EN_HARD: process.env.PINECONE_INDEX_HOST_EN_HARD,
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

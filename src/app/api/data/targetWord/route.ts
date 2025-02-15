@@ -1,22 +1,26 @@
-// app/api/targetWord/route.ts
-import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { NextRequest, NextResponse } from "next/server";
+import { supabase } from "@/lib/supabase";
+
+function getDailyWordId(): number {
+  const startId = 2; // Start ID ab 2
+  const today = new Date();
+  const dayOfYear = Math.floor(
+    (today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) / 86400000
+  );
+  return startId + (dayOfYear % 500); 
+}
 
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const id = searchParams.get('id');
+  const wordId = getDailyWordId();
 
-  // Wenn eine ID als Query-Parameter übergeben wurde, nur den passenden Eintrag zurückliefern.
-  // Ansonsten einfach alle Einträge ausgeben.
-  let query = supabase.from('targetWord').select('*');
-
-  if (id) {
-    query = query.eq('id', id);
-  }
-
-  const { data, error } = await query;
+  const { data, error } = await supabase
+    .from("targetWord")
+    .select("*")
+    .eq("target_word_id", wordId) 
+    .single();
 
   if (error) {
+    console.error("Error fetching daily word:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 

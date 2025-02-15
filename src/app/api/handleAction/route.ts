@@ -1,5 +1,3 @@
-// src/app/api/handleAction/route.ts
-
 import { NextRequest, NextResponse } from "next/server";
 import { callPinecone, PineconeResponse } from "./callPinecone";
 import { callActionEndpoint } from "./callActionEndpoint";
@@ -22,28 +20,30 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // Aufruf des Pinecone-Endpunkts; hier erhalten wir direkt einen PineconeResponse.
-    const pineconeResult: PineconeResponse = await callPinecone(Typedinword);
-    //console.log("Pinecone response:", JSON.stringify(pineconeResult, null, 2));
+    // Call the Pinecone endpoint using the selected difficulty.
+    const pineconeResult: PineconeResponse = await callPinecone(
+      Typedinword,
+      difficulty
+    );
 
-    // Extrahiere den Score aus dem ersten Treffer (falls vorhanden)
+    // Extract the score from the first match (if available)
     const playerScore = pineconeResult.matches?.[0]?.score ?? null;
 
     try {
       const actionPayload = {
-        playerId: playerId,
+        playerId,
         playerInput: Typedinword,
-        targetWordId: targetWordId,
-        difficulty: difficulty,
-        playerScore: playerScore,
+        targetWordId,
+        difficulty,
+        playerScore,
       };
       await callActionEndpoint(actionPayload);
     } catch (actionError) {
       console.error("Error calling action endpoint:", actionError);
-      // Fehler beim Action-Call sollen das Pinecone-Ergebnis nicht beeinflussen.
+      // Any errors from the action call should not affect the Pinecone result.
     }
 
-    // Es wird ausschließlich das Ergebnis des Pinecone-Endpunkts zurückgegeben.
+    // Return the Pinecone result to the client.
     return NextResponse.json(pineconeResult);
   } catch (error: unknown) {
     const errorMessage =

@@ -27,6 +27,10 @@ export type HeaderProps = GameStats & {
   difficulty: string;
   targetWordId: string;
 };
+export interface GuessesListProps {
+  guesses: GuessWithPending[];
+}
+
 
 export type WordInputProps = {
   onGuess: (word: string) => void;

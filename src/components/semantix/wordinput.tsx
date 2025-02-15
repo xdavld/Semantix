@@ -1,4 +1,3 @@
-import { Guess } from "@/types/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -19,7 +18,8 @@ const formSchema = z.object({
     .string()
     .min(1, { message: "Das Wort darf nicht leer sein." })
     .regex(/^[A-Za-zäöüßÄÖÜ]+$/, { message: "Bitte nur Buchstaben verwenden." })
-    .max(50, { message: "Das Wort darf höchstens 50 Zeichen lang sein." }),
+    .max(50, { message: "Das Wort darf höchstens 50 Zeichen lang sein." })
+    .transform((word) => word.toLowerCase()),
 });
 
 export default function WordInput({ onGuess }: WordInputProps) {
@@ -32,7 +32,7 @@ export default function WordInput({ onGuess }: WordInputProps) {
   });
 
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
-    onGuess(values.word);
+    onGuess(values.word.toLowerCase());
     form.reset();
   };
 

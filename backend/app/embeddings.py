@@ -14,7 +14,7 @@ pc = Pinecone(api_key=PINECONE_KEY)
 
 # Upload verschiedener Vokabularwörter zu Pinecone (leichter und schwerer Modus)
 #LEICHT
-index_name = "semantix-easy"
+index_name = "semantix-en"
 #SCHWER
 #index_name = "semantix"
 dimension = 1024 
@@ -45,7 +45,7 @@ model.eval()
 
 script_dir = Path(__file__).resolve().parent
 #LEICHTE LISTE
-input_file = script_dir.parent / 'data' / 'openthesaurus_processed_easymode.txt'
+input_file = script_dir.parent / 'data' / 'english_words_hardmode.txt'
 #SCHWERE LISTE
 #input_file = script_dir.parent / 'data' / 'openthesaurus_processed.txt'
 

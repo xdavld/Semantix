@@ -1,18 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
 import { Pinecone } from "@pinecone-database/pinecone";
+import { getDailyTargetWord } from "@/lib/dailyTargetWord";
 
 const apiKey = process.env.PINECONE_API_KEY;
 if (!apiKey) {
   throw new Error("PINECONE_API_KEY is not defined");
 }
-const indexName = process.env.PINECONE_INDEX_NAME;
+const indexName = process.env.PINECONE_INDEX_NAME_EN_HARD;
 if (!indexName) {
   throw new Error("PINECONE_INDEX_NAME is not defined");
 }
 
-const indexHost = process.env.PINECONE_INDEX_HOST;
+const indexHost = process.env.PINECONE_INDEX_HOST_EN_HARD;
 if (!indexHost) {
   throw new Error("PINECONE_INDEX_HOST is not defined");
 }
@@ -20,49 +19,8 @@ if (!indexHost) {
 const pc = new Pinecone({ apiKey });
 const index = pc.index(indexName, indexHost);
 
-function loadWordsFromFile(): string[] {
-  // Attempt reading 'openthesaurus_processed.txt' from project root
-  const filePath = path.join(
-    process.cwd(),
-    "/backend/data/openthesaurus_processed.txt"
-  );
-  try {
-    const fileContent = fs.readFileSync(filePath, "utf-8");
-    return fileContent
-      .split("\n")
-      .map((line) => line.trim())
-      .filter(Boolean);
-  } catch (error) {
-    console.error("Error reading openthesaurus_processed.txt:", error);
-    return [];
-  }
-}
-
-// Keep these in global scope so they aren't re-initialized every call
-const possibleWords = loadWordsFromFile();
-let dailyTargetWord: string | null = null;
-let lastDateUsed: string | null = null;
-
-// Helper to get today's date (YYYY-MM-DD)
-function getTodayDateString() {
-  return new Date().toISOString().split("T")[0];
-}
-
-// Choose a new random word if the day changed or if none chosen yet
-function getDailyTargetWord(): string {
-  const today = getTodayDateString();
-  if (!dailyTargetWord || lastDateUsed !== today) {
-    if (possibleWords.length === 0) {
-      console.warn("No words loaded from file. Falling back to default.");
-      dailyTargetWord = "Fehler";
-    } else {
-      const randIndex = Math.floor(Math.random() * possibleWords.length);
-      dailyTargetWord = possibleWords[randIndex];
-    }
-    lastDateUsed = today;
-  }
-  return dailyTargetWord;
-}
+const difficulty = "en_hard";
+const dailyWord = await getDailyTargetWord(difficulty);
 
 // ----- 2) Define the POST route -----
 export async function POST(request: NextRequest) {
@@ -88,9 +46,6 @@ export async function POST(request: NextRequest) {
 
     // Grab ID from the first query match
     const typedInWordId = firstQuery.matches[0].id;
-
-    // Get the "daily" random word
-    const dailyWord = getDailyTargetWord();
 
     // Second query: compare typed word to daily word
     const secondQuery = await index.namespace("").query({

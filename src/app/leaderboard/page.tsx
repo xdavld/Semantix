@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import { Filters } from "../../components/leaderboard/filters";
-import { LeaderboardTable } from "../../components/leaderboard/LeaderboardTable";
+import { LeaderboardTable } from "../../components/leaderboard/leaderboardtable";
 
 // Importiere die Card-Komponenten
 import {
