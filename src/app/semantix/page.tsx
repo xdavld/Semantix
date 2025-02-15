@@ -9,11 +9,13 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { WinDialog } from "@/components/semantix/winningscreen";
 import { sendActionData } from "@/utils/action";
+import { usePlayer } from "@/context/PlayerContext"; 
 import SettingsForm from "@/components/semantix/settingsform";
 
 export default function SemantixGame() {
-  const [difficulty, setDifficulty] = useState("de_easy");
-  const [playerId, setPlayerId] = useState("6");
+  //These 3 fields are defining who the player is and which game mode he is playing
+  const { playerId, setPlayerId } = usePlayer();
+  const [difficulty, setdifficulty] = useState("de_easy");
   const [targetWordId, setTargetWordId] = useState("1");
 
   const [settingsConfirmed, setSettingsConfirmed] = useState(false);
