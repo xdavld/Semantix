@@ -49,21 +49,25 @@ export interface ActionResponse {
 export async function sendActionData(
   params: ActionParams
 ): Promise<ActionResponse> {
+  const payload = {
+    playerId: params.playerId ?? null,
+    playerInput: params.playerInput ?? null,
+    playerScore: params.playerScore ?? null,
+    targetWordId: params.targetWordId ?? null,
+    isHint: params.isHint ?? null,
+    isSurrender: params.isSurrender ?? null,
+    isWin: params.isWin ?? null,
+    difficulty: params.difficulty ?? null,
+  };
+
+  console.log("Sending payload:", payload); // Log the payload before sending
+
   const response = await fetch("/api/data/action", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      playerId: params.playerId ?? null,
-      playerInput: params.playerInput ?? null,
-      playerScore: params.playerScore ?? null,
-      targetWordId: params.targetWordId ?? null,
-      isHint: params.isHint ?? null,
-      isSurrender: params.isSurrender ?? null,
-      isWin: params.isWin ?? null,
-      difficulty: params.difficulty ?? null,
-    }),
+    body: JSON.stringify(payload),
   });
 
   if (!response.ok) {
