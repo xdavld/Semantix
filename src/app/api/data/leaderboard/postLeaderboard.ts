@@ -37,7 +37,7 @@ export async function handlePost(request: NextRequest) {
       console.log("Gefundener bestehender Eintrag:", existingEntry);
     }
 
-    if (checkError && checkError.code !== "PGRST116") { // PGRST116 bedeutet, dass kein Eintrag gefunden wurde
+    if (checkError && checkError.code !== "PGRST116") { // PGRST116 means, nothing found
       return NextResponse.json(
         { error: "Fehler bei der Prüfung des Leaderboard-Eintrags" },
         { status: 500 }

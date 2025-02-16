@@ -35,7 +35,7 @@ export function SignupForm({
             });
 
             const data = await response.json();
-            console.log("API Response:", data); // Debug-Log für die gesamte Antwort
+            console.log("API Response:", data);
 
             if (!response.ok || !Array.isArray(data) || data.length === 0) {
                 throw new Error("User creation failed or invalid response format");
@@ -48,11 +48,11 @@ export function SignupForm({
             }
 
             console.log("User created:", user);
-            console.log("Extracted Player ID:", user.player_id); // Logge die Player ID
+            console.log("Extracted Player ID:", user.player_id);
 
             toast.success("User successfully created!");
-            setPlayerId(user.player_id); // Setze die Player ID im Context
-            router.push("/semantix"); // Besser als `window.location.href`
+            setPlayerId(user.player_id);
+            router.push("/semantix");
         } catch (error) {
             const errMsg =
                 error instanceof Error

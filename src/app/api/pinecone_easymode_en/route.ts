@@ -3,7 +3,6 @@ import { Pinecone } from "@pinecone-database/pinecone";
 import { getDailyTargetWord } from "@/lib/dailyTargetWord";
 import { supabase } from "@/lib/supabase";
 
-// Hilfsfunktion: Zielwort anhand der übergebenen targetWordId holen
 async function getTargetWordById(
   targetWordId: number,
   combinedKey: string
@@ -39,11 +38,9 @@ const difficulty = "en_easy";
 
 export async function POST(request: NextRequest) {
   try {
-    // Logge den rohen Request-Body, um zu prüfen, was ankommt:
     const rawBody = await request.text();
     console.log("Roh-Body in handleAction:", rawBody);
 
-    // Jetzt den Body als JSON parsen:
     const parsedBody = JSON.parse(rawBody);
     console.log("Parsed Body:", parsedBody);
 
@@ -62,7 +59,6 @@ export async function POST(request: NextRequest) {
 
     console.log("Final verwendetes Zielwort:", targetWord);
 
-    // 1. Query: Finde in Pinecone den Eintrag, der dem Zielwort entspricht
     const firstQuery = await index.namespace("").query({
       vector: Array(1024).fill(0),
       topK: 1,

@@ -22,11 +22,9 @@ export default function GuessesList({ guesses }: GuessesListProps) {
     if (guess.isPending) {
       return "Berechnung...";
     }
-    // Falls Position vorhanden, diese anzeigen:
     if (guess.position !== undefined && guess.totalMatches !== undefined) {
       return `Position ${guess.position} von ${guess.totalMatches}`;
     }
-    // Ansonsten Score als Prozentwert anzeigen:
     if (guess.score !== undefined) {
       return `${(guess.score * 100).toFixed(2)}%`;
     }
@@ -58,13 +56,11 @@ export default function GuessesList({ guesses }: GuessesListProps) {
     return "#f5f5f5";
   }
 
-  // Für die separate Anzeige des zuletzt eingegebenen Guess verwenden wir lastEnteredGuess
   const lastGuessDisplay = getDisplay(lastEnteredGuess);
   const lastGuessBackground = getBackground(lastEnteredGuess);
 
   return (
     <div className="w-full max-w-md">
-      {/* Separat oben: zuletzt eingegebener Guess mit dicker Border */}
       <div
         className="flex justify-between items-center p-3 mb-4 rounded-md text-gray-800 font-semibold border-4 border-gray-800 dark:border-white"
         style={{ background: lastGuessBackground }}
@@ -73,18 +69,15 @@ export default function GuessesList({ guesses }: GuessesListProps) {
         <span>{lastGuessDisplay}</span>
       </div>
 
-      {/* Die sortierte Liste aller Guesses */}
       {sortedGuesses.map((guess) => {
         const display = getDisplay(guess);
         const background = getBackground(guess);
-        // Markiere den zuletzt eingegebenen Guess anhand der ID
         const isLastGuess = guess.id === lastEnteredGuess.id;
         return (
           <div
             key={guess.id}
-            className={`flex justify-between items-center p-3 mb-2 rounded-md text-gray-800 font-semibold ${
-              isLastGuess ? "border-4 border-gray-800 dark:border-white" : ""
-            }`}
+            className={`flex justify-between items-center p-3 mb-2 rounded-md text-gray-800 font-semibold ${isLastGuess ? "border-4 border-gray-800 dark:border-white" : ""
+              }`}
             style={{ background }}
           >
             <span>{guess.word}</span>

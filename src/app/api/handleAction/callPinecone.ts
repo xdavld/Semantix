@@ -9,23 +9,14 @@ export interface PineconeResponse {
   matches: PineconeMatch[];
 }
 
-/**
- * Ruft den entsprechenden Pinecone-Endpunkt basierend auf der Difficulty auf.
- * @param typedInWord - Das vom Benutzer eingegebene Wort.
- * @param difficulty - Der ausgewählte Schwierigkeitsgrad ("de_easy" oder "de_hard")
- * @param targetWordId - Optional: die targetWordId, falls vorhanden
- * @returns Die JSON-Antwort des Pinecone-Endpunkts als PineconeResponse.
- */
 export async function callPinecone(
   typedInWord: string,
   difficulty: string,
   targetWordId?: string
 ): Promise<PineconeResponse> {
-  // Erweitere den Payload um targetWordId, falls vorhanden
   const payload = { Typedinword: typedInWord, targetWordId };
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "";
 
-  // Wähle den Endpunkt basierend auf der Difficulty
   let endpoint: string;
   switch (difficulty) {
     case "de_easy":

@@ -4,7 +4,6 @@ import React from "react";
 import {
   Table,
   TableBody,
-  /*TableCaption,*/
   TableCell,
   TableHead,
   TableHeader,
@@ -25,7 +24,7 @@ interface LeaderboardTableProps {
   targetWordId: string;
   difficultyQuery: string;
 }
- 
+
 export function LeaderboardTable({
   hideSurrender,
   targetWordId,
@@ -36,13 +35,11 @@ export function LeaderboardTable({
   >([]);
 
   React.useEffect(() => {
-    // Falls ein Parameter fehlt, kein Fetch
     if (!targetWordId || !difficultyQuery) {
       setLeaderboardData([]);
       return;
     }
 
-    // Dynamische Base-URL
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
     async function fetchLeaderboardData() {
@@ -60,12 +57,10 @@ export function LeaderboardTable({
     fetchLeaderboardData();
   }, [targetWordId, difficultyQuery]);
 
-  // Surrender ggf. ausfiltern
   const filteredData = hideSurrender
     ? leaderboardData.filter((item) => !item.is_surrender)
     : leaderboardData;
 
-  // Wenn keine Daten vorhanden sind, zeige Text statt Tabelle
   if (!filteredData.length) {
     return (
       <p className='text-sm text-muted-foreground'>
@@ -74,10 +69,8 @@ export function LeaderboardTable({
     );
   }
 
-  // Ansonsten Tabelle darstellen
   return (
     <Table>
-      {/*<TableCaption>Leaderboard Daten</TableCaption>*/}
       <TableHeader>
         <TableRow>
           <TableHead>Spieler Name</TableHead>

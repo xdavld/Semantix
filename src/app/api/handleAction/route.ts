@@ -2,12 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { callPinecone, PineconeResponse } from "./callPinecone";
 import { callActionEndpoint } from "./callActionEndpoint";
 
-/**
- * Der handleAction-Endpunkt:
- * - Parst den eingehenden JSON-Body.
- * - Leitet "Typedinword" zusammen mit targetWordId an den Pinecone-Endpunkt weiter und gibt dessen Antwort zurück.
- * - Ruft zusätzlich den Action-Endpunkt auf, dessen Ergebnis nicht an den Client weitergegeben wird.
- */
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const body = await request.json();
@@ -24,7 +18,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const pineconeResult: PineconeResponse = await callPinecone(
       Typedinword,
       difficulty,
-      targetWordId 
+      targetWordId
     );
 
     // Extract the score from the first match (if available)

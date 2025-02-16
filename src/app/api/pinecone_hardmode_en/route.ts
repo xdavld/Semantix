@@ -3,7 +3,6 @@ import { Pinecone } from "@pinecone-database/pinecone";
 import { getDailyTargetWord } from "@/lib/dailyTargetWord";
 import { supabase } from "@/lib/supabase";
 
-// Hilfsfunktion: Zielwort anhand der übergebenen targetWordId holen
 async function getTargetWordById(
   targetWordId: number,
   combinedKey: string
@@ -43,17 +42,14 @@ const pc = new Pinecone({ apiKey });
 const index = pc.index(indexName, indexHost);
 const difficulty = "en_hard";
 
-// Hole das tägliche Zielwort (als Fallback)
 const dailyWord = await getDailyTargetWord(difficulty);
 
 export async function POST(request: NextRequest) {
   try {
-    // Parse den Request-Body und erhalte sowohl das eingegebene Wort als auch die targetWordId
     const { Typedinword, targetWordId: providedTargetWordId } =
       await request.json();
     console.log("Empfangene targetWordId:", providedTargetWordId);
 
-    // Setze das Zielwort basierend auf providedTargetWordId oder verwende das dailyWord
     let targetWord: string;
     if (providedTargetWordId) {
       targetWord = await getTargetWordById(
@@ -65,7 +61,6 @@ export async function POST(request: NextRequest) {
     }
     console.log("Verwendetes Zielwort:", targetWord);
 
-    // ----- 1) Erster Query: Finde den Eintrag, der dem eingegebenen Wort entspricht -----
     const firstQuery = await index.namespace("").query({
       vector: Array(1024).fill(0),
       topK: 1,
@@ -85,8 +80,7 @@ export async function POST(request: NextRequest) {
     // Hole die ID des eingegebenen Wortes aus der ersten Query
     const typedInWordId = firstQuery.matches[0].id;
 
-    // ----- 2) Zweiter Query: Vergleiche das eingegebene Wort mit dem Zielwort -----
-    // Hier wird z.B. geprüft, ob der Eintrag mit der ID des eingegebenen Wortes auch das Zielwort enthält.
+
     const secondQuery = await index.namespace("").query({
       id: typedInWordId,
       topK: 1,

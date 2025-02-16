@@ -8,7 +8,6 @@ export async function handleGet(request: NextRequest) {
     const targetWordId = searchParams.get("target_word_id");
     const difficulty = searchParams.get("difficulty");
 
-    // Überprüfen der Parameter
     if (!playerId || !targetWordId || !difficulty) {
       return NextResponse.json(
         {
@@ -19,7 +18,6 @@ export async function handleGet(request: NextRequest) {
       );
     }
 
-    // Daten von Supabase abfragen
     const { data, error } = await supabase
       .from("action")
       .select("*")

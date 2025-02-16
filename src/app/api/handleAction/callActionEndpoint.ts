@@ -1,9 +1,3 @@
-/**
- * Ruft den Action-Endpunkt mit einem minimalen Payload auf.
- * Es werden nur die für die Speicherung relevanten Felder übermittelt.
- * @param payload - Enthält playerID, playerInput, targetWord und difficulty.
- * @throws Error, falls der Action-Request fehlschlägt.
- */
 export async function callActionEndpoint(payload: {
   playerId: string;
   playerInput: string;

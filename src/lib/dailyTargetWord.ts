@@ -4,11 +4,6 @@ function getTodayDateString(date: Date = new Date()): string {
   return date.toISOString().split("T")[0];
 }
 
-/**
- * Ruft das Zielwort für den gegebenen kombinierten Schlüssel (z. B. "de_easy") ab.
- * Wird ein Datum übergeben, wird das entsprechende Wort für diesen Tag abgerufen.
- * Es findet kein Caching statt.
- */
 export async function getDailyTargetWord(
   combinedKey: string,
   dateParam?: Date

@@ -13,7 +13,7 @@ export function WinDialog({
   onReset,
   isSurrendered,
   difficulty,
-  onPastDaySelect, // Neuer Prop für Past-Day-Selection
+  onPastDaySelect,
 }: WinDialogProps & {
   isSurrendered?: boolean;
   difficulty: string;

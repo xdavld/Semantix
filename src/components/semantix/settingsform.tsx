@@ -22,11 +22,9 @@ export default function SettingsForm({
   onDifficultyTypeChange,
   onConfirm,
 }: SettingsFormProps) {
-  // Der difficulty-String enthält z.B. "de_easy" oder "en_hard".
-  // Wenn ein Teil fehlt, wird ein leerer String zurückgegeben.
+  //  difficulty-String could be "de_easy" or "en_hard".
   const [currentLanguage, currentType] = difficulty.split("_");
 
-  // Der Button wird aktiv, wenn beide Werte ausgewählt sind.
   const isReady = currentLanguage !== "" && currentType !== "";
 
   return (
