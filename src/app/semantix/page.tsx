@@ -145,11 +145,11 @@ export default function SemantixGame() {
           prev.map((g) =>
             g.id === tempId
               ? {
-                  ...g,
-                  position: data.position,
-                  totalMatches: data.totalMatches,
-                  isPending: false,
-                }
+                ...g,
+                position: data.position,
+                totalMatches: data.totalMatches,
+                isPending: false,
+              }
               : g
           )
         );
@@ -166,7 +166,7 @@ export default function SemantixGame() {
 
         if (word.toUpperCase() === currentTargetWord) {
           setHasWon(true);
-          sendActionData({ difficulty, isWin: true }).catch((error) =>
+          sendActionData({ difficulty, isWin: true, playerId }).catch((error) =>
             console.error("Error sending winning data:", error)
           );
         }
@@ -200,7 +200,7 @@ export default function SemantixGame() {
 
       if (word.toUpperCase() === currentTargetWord) {
         setHasWon(true);
-        sendActionData({ difficulty, isWin: true }).catch((error) =>
+        sendActionData({ difficulty, isWin: true, playerId }).catch((error) =>
           console.error("Error sending winning data:", error)
         );
       }
@@ -223,6 +223,7 @@ export default function SemantixGame() {
     setHasWon(true);
     sendActionData({
       difficulty,
+      playerId,
       isSurrender: true,
     }).catch((error) => console.error("Error sending surrender data:", error));
     return true;
