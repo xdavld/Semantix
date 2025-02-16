@@ -44,7 +44,7 @@ export default function SettingsForm({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="easy">Einfach</SelectItem>
-            <SelectItem value="hard">Hart</SelectItem>
+            <SelectItem value="hard">Schwer</SelectItem>
           </SelectContent>
         </Select>
       </div>

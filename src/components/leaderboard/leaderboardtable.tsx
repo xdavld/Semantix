@@ -25,7 +25,7 @@ interface LeaderboardTableProps {
   targetWordId: string;
   difficultyQuery: string;
 }
-
+ 
 export function LeaderboardTable({
   hideSurrender,
   targetWordId,

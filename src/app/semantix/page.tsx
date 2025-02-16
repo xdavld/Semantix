@@ -81,6 +81,13 @@ export default function SemantixGame() {
   };
 
   const handleGuess = async (word: string) => {
+    const normalizedWord = word.trim().toUpperCase();
+    
+    if (guesses.some((g) => g.word.toUpperCase() === normalizedWord)) {
+      toast.error("Dieses Wort wurde bereits eingegeben!");
+      return;
+    }
+
     const tempId = new Date().getTime().toString();
     setGuesses((prev) => [
       ...prev,
@@ -96,7 +103,7 @@ export default function SemantixGame() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          Typedinword: word, 
+          Typedinword: word,
           difficulty,
           playerId,
           targetWordId,

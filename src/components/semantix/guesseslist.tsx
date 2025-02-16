@@ -3,8 +3,11 @@ import { GuessWithPending, GuessesListProps } from "@/types/types";
 export default function GuessesList({ guesses }: GuessesListProps) {
   if (!guesses.length) return null;
 
-  // Sortierung:
-  // - Falls Position vorhanden ist, sortiere aufsteigend (1. Platz ist besser als 212.)
+  // Den zuletzt eingegebenen Guess aus der Originalreihenfolge ermitteln:
+  const lastEnteredGuess = guesses[guesses.length - 1];
+
+  // Sortierung der Guesses:
+  // - Falls Position vorhanden ist, sortiere aufsteigend (niedrigere Position = besser)
   // - Falls Score vorhanden ist, sortiere absteigend (höchster Score zuerst)
   const sortedGuesses = [...guesses].sort((a, b) => {
     if (a.position !== undefined && b.position !== undefined) {
@@ -55,23 +58,27 @@ export default function GuessesList({ guesses }: GuessesListProps) {
     return "#f5f5f5";
   }
 
-  const lastGuess = sortedGuesses[sortedGuesses.length - 1];
-  const lastGuessDisplay = getDisplay(lastGuess);
-  const lastGuessBackground = getBackground(lastGuess);
+  // Für die separate Anzeige des zuletzt eingegebenen Guess verwenden wir lastEnteredGuess
+  const lastGuessDisplay = getDisplay(lastEnteredGuess);
+  const lastGuessBackground = getBackground(lastEnteredGuess);
 
   return (
     <div className="w-full max-w-md">
+      {/* Separat oben: zuletzt eingegebener Guess mit dicker Border */}
       <div
         className="flex justify-between items-center p-3 mb-4 rounded-md text-gray-800 font-semibold border-4 border-gray-800 dark:border-white"
         style={{ background: lastGuessBackground }}
       >
-        <span>{lastGuess.word}</span>
+        <span>{lastEnteredGuess.word}</span>
         <span>{lastGuessDisplay}</span>
       </div>
+
+      {/* Die sortierte Liste aller Guesses */}
       {sortedGuesses.map((guess) => {
         const display = getDisplay(guess);
         const background = getBackground(guess);
-        const isLastGuess = guess === lastGuess;
+        // Markiere den zuletzt eingegebenen Guess anhand der ID
+        const isLastGuess = guess.id === lastEnteredGuess.id;
         return (
           <div
             key={guess.id}

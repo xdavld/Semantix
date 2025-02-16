@@ -66,7 +66,7 @@ export function Filters({
             <SelectValue placeholder='Schwierigkeitsgrad' />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value='leicht'>Leicht</SelectItem>
+            <SelectItem value='leicht'>Einfach</SelectItem>
             <SelectItem value='schwer'>Schwer</SelectItem>
           </SelectContent>
         </Select>
