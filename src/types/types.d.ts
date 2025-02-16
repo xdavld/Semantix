@@ -12,7 +12,9 @@ type WithTimestamps<T> = T & { timestamp: Date; playerId: string };
 type GuessBase = {
   id: string;
   word: string;
-  score: number;
+  score?: number; // Für Hard-Modus (optional, da im Easy-Modus nicht gesetzt)
+  position?: number; // Für Easy-Modus (optional)
+  totalMatches?: number; // Für Easy-Modus (optional)
 };
 
 export type GuessWithPending = WithPending<GuessBase>;
@@ -27,10 +29,10 @@ export type HeaderProps = GameStats & {
   difficulty: string;
   targetWordId: string;
 };
+
 export interface GuessesListProps {
   guesses: GuessWithPending[];
 }
-
 
 export type WordInputProps = {
   onGuess: (word: string) => void;

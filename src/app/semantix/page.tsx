@@ -9,14 +9,14 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { WinDialog } from "@/components/semantix/winningscreen";
 import { sendActionData } from "@/utils/action";
-import { usePlayer } from "@/context/PlayerContext"; 
+import { usePlayer } from "@/context/PlayerContext";
 import SettingsForm from "@/components/semantix/settingsform";
+import { getDailyTargetWord } from "@/lib/dailyTargetWord";
 
 export default function SemantixGame() {
-  //These 3 fields are defining who the player is and which game mode he is playing
-  const { playerId, setPlayerId } = usePlayer();
-  const [difficulty, setdifficulty] = useState("de_easy");
-  const [targetWordId, setTargetWordId] = useState("1");
+  const { playerId } = usePlayer();
+  const [difficulty, setDifficulty] = useState("");
+  const [targetWordId, setTargetWordId] = useState("");
 
   const [settingsConfirmed, setSettingsConfirmed] = useState(false);
   const [guesses, setGuesses] = useState<GuessWithPending[]>([]);
@@ -43,7 +43,16 @@ export default function SemantixGame() {
     setTargetWord("");
     setHasWon(false);
     setIsSurrendered(false);
-    setSettingsConfirmed(false); 
+    setSettingsConfirmed(false);
+    setTargetWordId("");
+  };
+
+  const resetGameForNewTarget = (newTarget: string) => {
+    setGuesses([]);
+    setHintCount(0);
+    setTargetWord(newTarget.toUpperCase());
+    setHasWon(false);
+    setIsSurrendered(false);
   };
 
   const getGameNumber = () => {
@@ -53,12 +62,32 @@ export default function SemantixGame() {
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
 
+  const handlePastDaySelect = async (date: string) => {
+    try {
+      const parsedDate = new Date(date);
+      const newTarget = await getDailyTargetWord(difficulty, parsedDate);
+
+      const startDate = new Date("2025-01-23");
+      const startId = 45073;
+      const diffTime = parsedDate.getTime() - startDate.getTime();
+      const dayDiff = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const newWordId = startId + (dayDiff % 500);
+      setTargetWordId(newWordId.toString());
+      resetGameForNewTarget(newTarget);
+    } catch (error) {
+      console.error(error);
+      toast.error("Fehler beim Laden des Zielworts für den ausgewählten Tag.");
+    }
+  };
+
   const handleGuess = async (word: string) => {
     const tempId = new Date().getTime().toString();
     setGuesses((prev) => [
       ...prev,
       { id: tempId, word, score: 0, isPending: true },
     ]);
+
+    console.log("handleGuess", word, difficulty, playerId, targetWordId);
 
     try {
       const response = await fetch("/api/handleAction", {
@@ -68,9 +97,9 @@ export default function SemantixGame() {
         },
         body: JSON.stringify({
           Typedinword: word,
-          difficulty, 
+          difficulty,
           playerId,
-          targetWordId,
+          targetWordId, // targetWordId sollte hier gesetzt sein
         }),
       });
 
@@ -85,15 +114,54 @@ export default function SemantixGame() {
       }
 
       const data = await response.json();
-      const apiTargetWord = data.matches?.[0]?.metadata?.word;
-      if (apiTargetWord && !targetWord) {
-        setTargetWord(apiTargetWord.toUpperCase());
+
+      if (data.position !== undefined) {
+        if (data.position === null) {
+          toast.error("Dieses Wort existiert nicht in der Datenbank.");
+          setGuesses((prev) => prev.filter((g) => g.id !== tempId));
+          return;
+        }
+        setGuesses((prev) =>
+          prev.map((g) =>
+            g.id === tempId
+              ? {
+                  ...g,
+                  position: data.position,
+                  totalMatches: data.totalMatches,
+                  isPending: false,
+                }
+              : g
+          )
+        );
+
+        if (!targetWord && (data.targetWord || data.dailyWord)) {
+          setTargetWord((data.targetWord || data.dailyWord).toUpperCase());
+        }
+
+        const currentTargetWord =
+          targetWord ||
+          (data.targetWord || data.dailyWord
+            ? (data.targetWord || data.dailyWord).toUpperCase()
+            : "");
+
+        if (word.toUpperCase() === currentTargetWord) {
+          setHasWon(true);
+          sendActionData({ difficulty, isWin: true }).catch((error) =>
+            console.error("Error sending winning data:", error)
+          );
+        }
+        return;
       }
 
       if (!data.matches || data.matches.length === 0) {
         toast.error("Dieses Wort existiert nicht in der Datenbank.");
         setGuesses((prev) => prev.filter((g) => g.id !== tempId));
         return;
+      }
+
+      const apiTargetWord = data.matches[0]?.metadata?.word;
+      if (apiTargetWord && !targetWord) {
+        setTargetWord(apiTargetWord.toUpperCase());
       }
 
       const match = data.matches[0];
@@ -105,12 +173,14 @@ export default function SemantixGame() {
         )
       );
 
-      if (word.toUpperCase() === targetWord) {
+      const currentTargetWord =
+        targetWord ||
+        (data.dailyWord ? data.dailyWord.toUpperCase() : "") ||
+        (apiTargetWord ? apiTargetWord.toUpperCase() : "");
+
+      if (word.toUpperCase() === currentTargetWord) {
         setHasWon(true);
-        sendActionData({
-          difficulty,
-          isWin: true,
-        }).catch((error) =>
+        sendActionData({ difficulty, isWin: true }).catch((error) =>
           console.error("Error sending winning data:", error)
         );
       }
@@ -160,13 +230,13 @@ export default function SemantixGame() {
           hintCount={hintCount}
           onHint={() => setHintCount((prev) => prev + 1)}
           onSurrender={handleSurrender}
-          playerId={playerId}
+          playerId={playerId || ""}
           difficulty={difficulty}
           targetWordId={targetWordId}
         />
         <WordInput onGuess={handleGuess} />
         {error && <div className="text-red-500 mt-2">{error}</div>}
-        <GuessesList guesses={guesses} />
+        <GuessesList key={targetWord} guesses={guesses} />
       </div>
 
       {hasWon && (
@@ -176,6 +246,8 @@ export default function SemantixGame() {
           targetWord={targetWord}
           onReset={resetGame}
           isSurrendered={isSurrendered}
+          difficulty={difficulty}
+          onPastDaySelect={handlePastDaySelect}
         />
       )}
     </>

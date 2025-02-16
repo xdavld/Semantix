@@ -158,14 +158,6 @@ export default function Header({
               )}
             </DialogMenuItem>
 
-            <DialogMenuItem
-              icon={<Calendar />}
-              title="Frühere Spiele"
-              dialogTitle="Spielverlauf"
-            >
-              <p>Hier kommt die Liste der früheren Spiele...</p>
-            </DialogMenuItem>
-
             <DropdownMenuSeparator />
 
             <DialogMenuItem

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 import Cookies from "js-cookie";
 
 export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
@@ -59,14 +59,14 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
           <form className="p-6 md:p-8" onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
-                <h1 className="text-2xl font-bold">Welcome back</h1>
+                <h1 className="text-2xl font-bold">Willkommen zurück</h1>
                 <p className="text-balance text-muted-foreground">
-                  Login to your Acme Inc account
+                  Log dich ein in deinen Semantix Account
                 </p>
               </div>
               {error && <p className="text-red-500 text-sm">{error}</p>}
               <div className="grid gap-2">
-                <Label htmlFor="username">Username</Label>
+                <Label htmlFor="username">Benutzername</Label>
                 <Input
                   id="username"
                   type="text"
@@ -78,13 +78,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                  <a
-                    href="#"
-                    className="ml-auto text-sm underline-offset-2 hover:underline"
-                  >
-                    Forgot your password?
-                  </a>
+                  <Label htmlFor="password">Passwort</Label>
                 </div>
                 <Input
                   id="password"
@@ -98,9 +92,9 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
                 Login
               </Button>
               <div className="text-center text-sm">
-                Don&apos;t have an account?{" "}
+                Noch keinen Account?{" "}
                 <a href="/signup" className="underline underline-offset-4">
-                  Sign up
+                  Registrieren
                 </a>
               </div>
             </div>
@@ -114,10 +108,6 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
           </div>
         </CardContent>
       </Card>
-      <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
-      </div>
     </div>
   );
 }
