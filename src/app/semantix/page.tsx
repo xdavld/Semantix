@@ -82,10 +82,23 @@ export default function SemantixGame() {
 
   const handleGuess = async (word: string) => {
     const normalizedWord = word.trim().toUpperCase();
-    
+
     if (guesses.some((g) => g.word.toUpperCase() === normalizedWord)) {
       toast.error("Dieses Wort wurde bereits eingegeben!");
       return;
+    }
+
+    // Falls targetWordId noch nicht gesetzt ist, berechne sie für das aktuelle Datum
+    let currentTargetWordId = targetWordId;
+    if (!currentTargetWordId) {
+      const today = new Date();
+      const startDate = new Date("2025-01-23");
+      const startId = 45073;
+      const diffTime = today.getTime() - startDate.getTime();
+      const dayDiff = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const newWordId = startId + (dayDiff % 500);
+      currentTargetWordId = newWordId.toString();
+      setTargetWordId(currentTargetWordId);
     }
 
     const tempId = new Date().getTime().toString();
@@ -94,7 +107,7 @@ export default function SemantixGame() {
       { id: tempId, word, score: 0, isPending: true },
     ]);
 
-    console.log("handleGuess", word, difficulty, playerId, targetWordId);
+    console.log("handleGuess", word, difficulty, playerId, currentTargetWordId);
 
     try {
       const response = await fetch("/api/handleAction", {
@@ -106,7 +119,7 @@ export default function SemantixGame() {
           Typedinword: word,
           difficulty,
           playerId,
-          targetWordId,
+          targetWordId: currentTargetWordId,
         }),
       });
 
@@ -199,6 +212,7 @@ export default function SemantixGame() {
       toast.error(err.message || "Ein Fehler ist aufgetreten.");
     }
   };
+
 
   const handleSurrender = () => {
     if (!targetWord) {
