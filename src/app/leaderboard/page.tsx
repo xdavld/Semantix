@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { Filters } from "@/components/leaderboard/filters";
 import { LeaderboardTable } from "@/components/leaderboard/leaderboardtable";
 
