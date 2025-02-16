@@ -42,7 +42,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
       setPlayerId(data.player_id)
 
       toast.success("Login erfolgreich!");
-      router.push("/semantix");
+      window.location.href = "/semantix";
     } catch (error) {
       const errMsg = error instanceof Error ? error.message : "Anmelden nicht erfolgreich. Überprüfe deine Eingaben.";
       setError(errMsg);

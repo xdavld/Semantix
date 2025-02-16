@@ -45,7 +45,7 @@ export function SignupForm({
 
       toast.success("User successfully created!");
       setPlayerId(user.player_id);
-      router.push("/semantix");
+      window.location.href = "/semantix";
     } catch (error) {
       const errMsg =
         error instanceof Error

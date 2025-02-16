@@ -1,9 +1,5 @@
 import { LoginForm } from "@/components/login/login-form";
 
-export const metadata = {
-  hideHeader: true,
-};
-
 export default function LoginPage() {
   return (
     <div className="flex min-h-svh flex-col items-center justify-items-center p-6 md:p-16">

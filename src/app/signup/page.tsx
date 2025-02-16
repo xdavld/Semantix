@@ -1,9 +1,5 @@
 import { SignupForm } from "@/components/signup/signup-form";
 
-export const metadata = {
-  hideHeader: true,
-};
-
 export default function SignupPage() {
     return (
     <div className="flex min-h-svh flex-col items-center justify-items-center p-6 md:p-16">

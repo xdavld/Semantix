@@ -96,10 +96,10 @@ export default function SemantixGame() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          Typedinword: word,
+          Typedinword: word, 
           difficulty,
           playerId,
-          targetWordId, // targetWordId sollte hier gesetzt sein
+          targetWordId,
         }),
       });
 

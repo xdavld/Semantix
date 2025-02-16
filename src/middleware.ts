@@ -3,9 +3,10 @@ import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
+  const { pathname } = request.nextUrl;
 
-  // Add header to hide site header on login page
-  if (request.nextUrl.pathname === "/login") {
+  // Hide header on login and signup pages only
+  if (pathname === "/login" || pathname === "/signup") {
     requestHeaders.set("x-hidden-header", "true");
   }
 
