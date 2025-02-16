@@ -4,6 +4,6 @@ module.exports = {
     "^@/(.*)$": "<rootDir>/src/$1",
   },
   transform: {
-    "^.+\\.(js|jsx|ts|tsx)$": "babel-jest",
+    "^.+\\.[jt]sx?$": ["babel-jest", { presets: ["next/babel"] }],
   },
 };
