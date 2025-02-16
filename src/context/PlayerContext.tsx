@@ -27,10 +27,10 @@ function PlayerProviderContent({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         if (playerIdFromUrl) {
             setPlayerId(playerIdFromUrl);
-            Cookies.set("playerId", playerIdFromUrl);
+            Cookies.set("player_id", playerIdFromUrl);
             console.log("Player ID set from URL:", playerIdFromUrl);
         } else {
-            const storedPlayerId = Cookies.get("playerId");
+            const storedPlayerId = Cookies.get("player_id");
             if (storedPlayerId) {
                 setPlayerId(storedPlayerId);
                 console.log("Player ID retrieved from cookie:", storedPlayerId);
@@ -44,7 +44,7 @@ function PlayerProviderContent({ children }: { children: React.ReactNode }) {
             setPlayerId: (id: string) => {
                 console.log("Setting Player ID:", id);
                 setPlayerId(id);
-                Cookies.set("playerId", id);
+                Cookies.set("player_id", id);
             }
         }}>
             {children}

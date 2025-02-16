@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-
-// Assuming you have supabase configured somewhere in your project
 import { supabase } from "@/lib/supabase"; // Replace with your actual Supabase import
 
-// Define the shape of an 'action' object
 interface Action {
   action_id: number;
   created_at: string;
@@ -19,74 +16,97 @@ interface Action {
 
 export async function handlePost(request: NextRequest) {
   try {
-    // Parse the request body to get player_id, target_word_id, and difficulty
     const body = await request.json();
     const { playerId, targetWordId, difficulty } = body;
 
-    // Get the base URL from environment variables
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "";
+    console.log("Prüfung auf bestehenden Eintrag für:");
+    console.log(`player_id: ${playerId}, target_word_id: ${targetWordId}, difficulty: ${difficulty}`);
 
-    // Construct the URL for the /api/data/action endpoint
+    // Check if an entry already exists
+    const { data: existingEntry, error: checkError } = await supabase
+      .from("leaderboard")
+      .select("*")
+      .eq("player_id", playerId)
+      .eq("target_word_id", targetWordId)
+      .eq("difficulty", difficulty)
+      .single();
+
+    if (checkError) {
+      console.error("Fehler bei der Prüfung des bestehenden Eintrags:", checkError);
+    } else {
+      console.log("Gefundener bestehender Eintrag:", existingEntry);
+    }
+
+    if (checkError && checkError.code !== "PGRST116") { // PGRST116 bedeutet, dass kein Eintrag gefunden wurde
+      return NextResponse.json(
+        { error: "Fehler bei der Prüfung des Leaderboard-Eintrags" },
+        { status: 500 }
+      );
+    }
+
+    if (existingEntry) {
+      console.log("Eintrag existiert bereits!");
+      return NextResponse.json(
+        { error: "Eintrag existiert bereits für diesen Spieler, Schwierigkeit und Zielwort." },
+        { status: 400 }
+      );
+    }
+
+    console.log("Kein bestehender Eintrag gefunden. Weiter mit dem Einfügen...");
+
+    // Get actions from the action endpoint
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "";
     const response = await fetch(
       `${baseUrl}/api/data/action?player_id=${playerId}&target_word_id=${targetWordId}&difficulty=${difficulty}`
     );
 
-    // Check if the response is successful
     if (!response.ok) {
+      console.error("Fehler beim Abrufen der Aktionen:", response.statusText);
       return NextResponse.json(
-        { error: "Failed to fetch data from action endpoint" },
+        { error: "Fehler beim Abrufen der Aktionsdaten" },
         { status: 500 }
       );
     }
 
-    // Parse the JSON data from the response
     const { data: actions }: { data: Action[] } = await response.json();
+    console.log("Erhaltene Aktionen:", actions);
 
-    // Calculate the number of attempts by counting non-null player_input
-    const sumGuesses = actions.filter(
-      (action: Action) => action.player_input !== null
-    ).length;
+    const sumGuesses = actions.filter(action => action.player_input !== null).length;
+    const sumHint = actions.filter(action => action.isHint === true).length;
+    const isSurrender = actions.some(action => action.isSurrender === true);
 
-    // Calculate the sum of isHint (count how many are true)
-    const sumHint = actions.filter(
-      (action: Action) => action.isHint === true
-    ).length;
+    console.log(`Berechnete Werte - sum_guesses: ${sumGuesses}, sum_hint: ${sumHint}, is_surrender: ${isSurrender}`);
 
-    // Check if there's any isSurrender field (if found, set is_surrender to true)
-    const isSurrender = actions.some(
-      (action: Action) => action.isSurrender === true
-    );
-
-    // Now insert or update the leaderboard table
+    // Insert the new leaderboard entry
     const { data: leaderboardData, error } = await supabase
       .from("leaderboard")
-      .upsert([
+      .insert([
         {
           player_id: playerId,
           target_word_id: targetWordId,
           difficulty,
-          sum_guesses: sumGuesses, // Insert the calculated sum (number of guesses)
-          sum_hint: sumHint, // Insert the calculated sum (number of hints)
-          is_surrender: isSurrender, // Set is_surrender to true if there's any surrender
+          sum_guesses: sumGuesses,
+          sum_hint: sumHint,
+          is_surrender: isSurrender,
         },
       ])
       .select("*");
 
-    // Handle any error during the upsert operation
     if (error) {
-      console.error("Error inserting into leaderboard:", error);
+      console.error("Fehler beim Einfügen in das Leaderboard:", error);
       return NextResponse.json(
-        { error: "Error inserting into leaderboard" },
+        { error: "Fehler beim Einfügen in das Leaderboard" },
         { status: 500 }
       );
     }
 
-    // Return the inserted leaderboard data
+    console.log("Neuer Eintrag erfolgreich erstellt:", leaderboardData);
+
     return NextResponse.json({ data: leaderboardData }, { status: 201 });
   } catch (err) {
-    console.error("[POST /api/data/leaderboard] Caught error:", err);
+    console.error("[POST /api/data/leaderboard] Fehler aufgefangen:", err);
     return NextResponse.json(
-      { error: "Error processing the request" },
+      { error: "Fehler bei der Verarbeitung der Anfrage" },
       { status: 500 }
     );
   }

@@ -15,18 +15,24 @@ function generateDateOptions() {
   const startDate = new Date("2025-01-23");
   const today = new Date();
   const options = [];
-  let id = 1;
+  let id = 45074;
+  let defaultId = "";
 
   while (startDate <= today) {
     const formattedDate = startDate.toISOString().split("T")[0];
     options.push({ id: id.toString(), date: formattedDate });
+
+    if (formattedDate === today.toISOString().split("T")[0]) {
+      defaultId = id.toString();
+    }
+
     startDate.setDate(startDate.getDate() + 1);
     id++;
   }
-  return options;
+  return { options, defaultId };
 }
 
-const dateOptions = generateDateOptions();
+const { options: dateOptions, defaultId: defaultGameNumber } = generateDateOptions();
 
 // Props-Interface für die Filter-Komponente
 interface FiltersProps {
@@ -43,7 +49,7 @@ interface FiltersProps {
 export function Filters({
   hideSurrender,
   onHideSurrenderChange,
-  gameNumber,
+  gameNumber = defaultGameNumber,
   onGameNumberChange,
   difficulty,
   onDifficultyChange,

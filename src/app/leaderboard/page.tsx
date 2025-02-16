@@ -13,21 +13,31 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+// Funktion zur Berechnung der Game ID basierend auf dem aktuellen Datum
+const calculateGameId = (): number => {
+  const startDate = new Date(2025, 0, 23); // 23. Januar 2025
+  const today = new Date();
+
+  // Setze die Zeit auf Mitternacht, um Tagesunterschiede korrekt zu berechnen
+  startDate.setHours(0, 0, 0, 0);
+  today.setHours(0, 0, 0, 0);
+
+  const diffInDays = Math.floor((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+  return 45074 + diffInDays;
+};
+
 export default function Page() {
   // State für das Ein-/Ausblenden von "Surrender"
-  const [hideSurrender, setHideSurrender] = useState(false);
+  const [hideSurrender, setHideSurrender] = useState<boolean>(false);
 
-  // State für die ausgewählte Spielnummer (Target Word ID)
-  // Default auf "1"
-  const [gameNumber, setGameNumber] = useState("1");
+  // State für die ausgewählte Spielnummer (Target Word ID) mit dynamischem Default-Wert
+  const [gameNumber, setGameNumber] = useState<string>(calculateGameId().toString());
 
   // State für Schwierigkeitsgrad (leicht, mittel, schwer)
-  // Default auf "leicht"
-  const [difficulty, setDifficulty] = useState("leicht");
+  const [difficulty, setDifficulty] = useState<string>("leicht");
 
   // State für Sprache (deutsch, englisch)
-  // Default auf "deutsch"
-  const [language, setLanguage] = useState("deutsch");
+  const [language, setLanguage] = useState<string>("deutsch");
 
   // Kombinierter Difficulty‐String, z. B. "de_easy", "en_hard"
   const difficultyQuery = useMemo(() => {
@@ -41,10 +51,7 @@ export default function Page() {
       schwer: "hard",
     };
 
-    if (language && difficulty) {
-      return `${langMap[language]}_${diffMap[difficulty]}`;
-    }
-    return "";
+    return `${langMap[language]}_${diffMap[difficulty]}`;
   }, [language, difficulty]);
 
   return (
@@ -70,10 +77,8 @@ export default function Page() {
           />
         </CardContent>
         <CardFooter>
-          {/* Hier könntest Du z.B. Buttons anzeigen, wenn Du möchtest */}
           <p className='text-sm text-muted-foreground'>
-            {/*&rarr;{" "}
-            {/*Änderung der Filter aktualisiert automatisch das Leaderboard*/}
+            {/* Änderungen der Filter aktualisieren automatisch das Leaderboard */}
           </p>
         </CardFooter>
       </Card>
