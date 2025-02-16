@@ -10,21 +10,32 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 
+// Funktion, um eine Liste von Datumsoptionen zu generieren
+function generateDateOptions() {
+  const startDate = new Date("2025-01-23");
+  const today = new Date();
+  const options = [];
+  let id = 1;
+
+  while (startDate <= today) {
+    const formattedDate = startDate.toISOString().split("T")[0];
+    options.push({ id: id.toString(), date: formattedDate });
+    startDate.setDate(startDate.getDate() + 1);
+    id++;
+  }
+  return options;
+}
+
+const dateOptions = generateDateOptions();
+
 // Props-Interface für die Filter-Komponente
 interface FiltersProps {
-  // Switch: Surrender aus-/einblenden
   hideSurrender: boolean;
   onHideSurrenderChange: (value: boolean) => void;
-
-  // Spielnummer (Target Word ID)
   gameNumber: string;
   onGameNumberChange: (value: string) => void;
-
-  // Schwierigkeitsgrad (leicht, mittel, schwer)
   difficulty: string;
   onDifficultyChange: (value: string) => void;
-
-  // Sprache (deutsch, englisch)
   language: string;
   onLanguageChange: (value: string) => void;
 }
@@ -40,57 +51,54 @@ export function Filters({
   onLanguageChange,
 }: FiltersProps) {
   return (
-    <div className='flex flex-col space-y-4'>
+    <div className="flex flex-col space-y-4">
       {/* Zeile 1: Selektoren für Spielnummer, Schwierigkeit, Sprache */}
-      <div className='flex space-x-4'>
-        {/* Spielnummer */}
+      <div className="flex space-x-4">
+        {/* Spielnummer (Game ID basierend auf Datum) */}
         <Select value={gameNumber} onValueChange={onGameNumberChange}>
-          <SelectTrigger className='w-[180px]'>
-            <SelectValue placeholder='Spiel Nr.' />
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Spiel Datum" />
           </SelectTrigger>
           <SelectContent>
-            {Array.from({ length: 10 }, (_, i) => {
-              const val = (i + 1).toString();
-              return (
-                <SelectItem key={val} value={val}>
-                  Spiel {val}
-                </SelectItem>
-              );
-            })}
+            {dateOptions.map(({ id, date }) => (
+              <SelectItem key={id} value={id}>
+                {date}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
 
         {/* Schwierigkeitsgrad */}
         <Select value={difficulty} onValueChange={onDifficultyChange}>
-          <SelectTrigger className='w-[180px]'>
-            <SelectValue placeholder='Schwierigkeitsgrad' />
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Schwierigkeitsgrad" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value='leicht'>Einfach</SelectItem>
-            <SelectItem value='schwer'>Schwer</SelectItem>
+            <SelectItem value="leicht">Leicht</SelectItem>
+            <SelectItem value="schwer">Schwer</SelectItem>
           </SelectContent>
         </Select>
 
         {/* Sprache */}
         <Select value={language} onValueChange={onLanguageChange}>
-          <SelectTrigger className='w-[180px]'>
-            <SelectValue placeholder='Sprache' />
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Sprache" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value='deutsch'>Deutsch</SelectItem>
-            <SelectItem value='englisch'>Englisch</SelectItem>
+            <SelectItem value="deutsch">Deutsch</SelectItem>
+            <SelectItem value="englisch">Englisch</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       {/* Zeile 2: Switch für "Surrender" ausblenden */}
-      <div className='flex items-center space-x-2'>
+      <div className="flex items-center space-x-2">
         <Switch
           checked={hideSurrender}
           onCheckedChange={onHideSurrenderChange}
-          id='surrender-switch'
+          id="surrender-switch"
         />
-        <label htmlFor='surrender-switch' className='text-sm font-medium'>
+        <label htmlFor="surrender-switch" className="text-sm font-medium">
           &quot;Surrender&quot; ausblenden
         </label>
       </div>
